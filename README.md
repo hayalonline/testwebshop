@@ -113,6 +113,37 @@ docker compose up -d --build
 
 Voor een echte domeinnaam zet je meestal Nginx Proxy Manager, Caddy, Traefik of Nginx voor deze container en proxy je naar `http://127.0.0.1:3001`.
 
+## Automatische deployment via GitHub Actions
+
+Er staat een workflow in `.github/workflows/deploy.yml`.
+
+Deze workflow draait automatisch bij elke push naar `main`, bijvoorbeeld wanneer een pull request naar `main` wordt gemerged. De workflow uploadt de repo naar de VPS en voert daar uit:
+
+```bash
+docker compose up -d --build
+```
+
+Maak in GitHub bij `Settings > Secrets and variables > Actions` deze repository secrets aan:
+
+```text
+VPS_HOST=194.31.150.130
+VPS_USER=root
+VPS_APP_DIR=/opt/rembro
+VPS_SSH_KEY=<private ssh key met toegang tot de VPS>
+```
+
+`VPS_APP_DIR` is optioneel in de workflow; als deze leeg is gebruikt hij `/opt/rembro`.
+
+Belangrijk: op de VPS moet in `/opt/rembro/.env` al een productieconfig staan, bijvoorbeeld:
+
+```text
+ADMIN_USER=admin
+ADMIN_PASSWORD=admin123
+ADMIN_SECRET=een-lange-random-secret
+```
+
+De workflow overschrijft `.env` niet en bewaart de SQLite database via het Docker volume `rembro-data`.
+
 ## Database
 
 De SQLite database wordt automatisch gemaakt op:
