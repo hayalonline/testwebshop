@@ -15,13 +15,15 @@ export function Layout({ children }) {
           <NavLink to="/">Home</NavLink>
           <NavLink to="/shop">Shop</NavLink>
           <NavLink to="/contact">Contact</NavLink>
-          <NavLink to="/admin">Admin</NavLink>
         </nav>
-        <Link to="/winkelwagen" className="cart-link" aria-label="Winkelwagen">
-          <ShoppingBag size={20} />
-          <span>{totals.itemCount}</span>
-          <strong>{formatPrice(totals.totalPrice)}</strong>
-        </Link>
+        <div className="header-actions">
+          <NavLink to="/admin" className="cart-link admin-header-link">Admin</NavLink>
+          <Link to="/winkelwagen" className="cart-link" aria-label="Winkelwagen">
+            <ShoppingBag size={20} />
+            <span>{totals.itemCount}</span>
+            <strong>{formatPrice(totals.totalPrice)}</strong>
+          </Link>
+        </div>
       </header>
       <main>{children}</main>
       <footer className="site-footer">

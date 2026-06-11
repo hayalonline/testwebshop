@@ -118,12 +118,24 @@ img {
   color: var(--blue-800);
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
 .cart-link {
   display: flex;
   align-items: center;
   gap: 8px;
   background: var(--blue-900);
   color: white;
+}
+
+.admin-header-link {
+  min-height: 46px;
+  font-weight: 900;
 }
 
 .cart-link:hover {
@@ -956,6 +968,11 @@ textarea:focus {
   .main-nav {
     justify-content: flex-start;
     overflow-x: auto;
+  }
+
+  .header-actions {
+    justify-self: start;
+    flex-wrap: wrap;
   }
 
   .cart-link {
