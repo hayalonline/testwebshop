@@ -20,7 +20,7 @@ export function Layout({ children }) {
           <NavLink to="/contact">Contact</NavLink>
         </nav>
         <div className="header-actions">
-          <NavLink to="/admin" className="cart-link admin-header-link">Admin</NavLink>
+          <NavLink to="/admin" className="cart-link admin-header-link">Inloggen</NavLink>
           <Link to="/winkelwagen" className="cart-link" aria-label="Winkelwagen">
             <ShoppingBag size={20} />
             <span>{totals.itemCount}</span>
