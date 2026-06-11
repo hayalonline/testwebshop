@@ -28,8 +28,8 @@ export function ContactPage() {
           {sent && <div className="form-success">Bedankt, je bericht is ontvangen.</div>}
         </form>
         <aside className="company-info">
-          <div><MapPin size={20} /><span>Nordlane BV, Herengracht 100, 1015 BS Amsterdam</span></div>
-          <div><Mail size={20} /><span>info@nordlane.test</span></div>
+          <div><MapPin size={20} /><span>Rembro BV, Herengracht 100, 1015 BS Amsterdam</span></div>
+          <div><Mail size={20} /><span>info@rembro.test</span></div>
           <div><Phone size={20} /><span>+31 20 123 4567</span></div>
           <h2>Openingstijden</h2>
           <p>Maandag t/m vrijdag: 09:00 - 17:30</p>

@@ -23,6 +23,7 @@ npm run dev
 
 De frontend draait op `http://localhost:5173`.
 De backend API draait op `http://localhost:3001`.
+Swagger/OpenAPI documentatie draait op `http://localhost:3001/api-docs`.
 
 Adminpagina:
 
@@ -51,6 +52,66 @@ npm run server    # alleen backend
 npm run client    # alleen frontend
 npm run build     # frontend productiebuild
 ```
+
+## Docker deployment op VPS
+
+Deze app kan als één container draaien. In productie serveert Express zowel de API als de gebouwde React frontend.
+
+### 1. Build en start lokaal of op je VPS
+
+```bash
+docker compose up -d --build
+```
+
+Daarna is de app bereikbaar op:
+
+```text
+http://SERVER_IP:3001
+```
+
+Swagger staat op:
+
+```text
+http://SERVER_IP:3001/api-docs
+```
+
+### 2. Admin credentials aanpassen
+
+Maak op je VPS een `.env` bestand naast `docker-compose.yml`:
+
+```bash
+cp .env.example .env
+nano .env
+```
+
+Vul minimaal sterke waarden in:
+
+```text
+ADMIN_USER=admin
+ADMIN_PASSWORD=een-sterk-wachtwoord
+ADMIN_SECRET=een-lange-random-secret
+```
+
+### 3. Database persistent houden
+
+SQLite wordt opgeslagen in het Docker volume `rembro-data`, gekoppeld aan:
+
+```text
+/app/server/data
+```
+
+Daardoor blijven producten en orders behouden wanneer je de container opnieuw start.
+
+### 4. Handige Docker commando's
+
+```bash
+docker compose logs -f
+docker compose restart
+docker compose down
+docker compose up -d --build
+```
+
+Voor een echte domeinnaam zet je meestal Nginx Proxy Manager, Caddy, Traefik of Nginx voor deze container en proxy je naar `http://127.0.0.1:3001`.
 
 ## Database
 
