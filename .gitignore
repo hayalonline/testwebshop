@@ -3,4 +3,5 @@ dist/
 .local-run/
 server/data/*.sqlite
 server/data/*.sqlite-*
+.env
 .idea

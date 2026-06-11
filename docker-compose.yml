@@ -1,0 +1,18 @@
+services:
+  rembro:
+    build: .
+    container_name: rembro-webshop
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      ADMIN_USER: ${ADMIN_USER:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?set ADMIN_PASSWORD in .env}
+      ADMIN_SECRET: ${ADMIN_SECRET:?set ADMIN_SECRET in .env}
+    volumes:
+      - rembro-data:/app/server/data
+
+volumes:
+  rembro-data:
