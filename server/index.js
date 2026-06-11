@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { initializeDatabase } from "./db/database.js";
+import { openApiSpec, swaggerHtml } from "./openapi.js";
 import authRoutes from "./routes/auth.js";
 import productRoutes from "./routes/products.js";
 import orderRoutes from "./routes/orders.js";
@@ -15,6 +16,14 @@ app.use(express.json({ limit: "1mb" }));
 
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok" });
+});
+
+app.get("/api-docs/openapi.json", (_req, res) => {
+  res.json(openApiSpec);
+});
+
+app.get("/api-docs", (_req, res) => {
+  res.type("html").send(swaggerHtml());
 });
 
 app.use("/api/auth", authRoutes);

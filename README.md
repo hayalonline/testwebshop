@@ -23,6 +23,7 @@ npm run dev
 
 De frontend draait op `http://localhost:5173`.
 De backend API draait op `http://localhost:3001`.
+Swagger/OpenAPI documentatie draait op `http://localhost:3001/api-docs`.
 
 Adminpagina:
 
