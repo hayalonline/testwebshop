@@ -1,0 +1,6 @@
+node_modules/
+dist/
+.local-run/
+server/data/*.sqlite
+server/data/*.sqlite-*
+.idea
