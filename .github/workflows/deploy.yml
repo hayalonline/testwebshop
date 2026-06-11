@@ -1,0 +1,58 @@
+name: Deploy Rembro
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Build and deploy Docker container
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure SSH
+        shell: bash
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/rembro_deploy_key
+          chmod 600 ~/.ssh/rembro_deploy_key
+          ssh-keyscan -H "${{ secrets.VPS_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Create deployment archive
+        shell: bash
+        run: |
+          tar \
+            --exclude='./node_modules' \
+            --exclude='./dist' \
+            --exclude='./.git' \
+            --exclude='./.github' \
+            --exclude='./.idea' \
+            --exclude='./.local-run' \
+            --exclude='./server/data/*.sqlite' \
+            --exclude='./server/data/*.sqlite-*' \
+            -cf rembro-deploy.tar .
+
+      - name: Upload and rebuild on VPS
+        shell: bash
+        run: |
+          APP_DIR="${{ secrets.VPS_APP_DIR }}"
+          if [ -z "$APP_DIR" ]; then
+            APP_DIR="/opt/rembro"
+          fi
+
+          ssh -i ~/.ssh/rembro_deploy_key "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" "mkdir -p '$APP_DIR'"
+          scp -i ~/.ssh/rembro_deploy_key rembro-deploy.tar "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/tmp/rembro-deploy.tar"
+          ssh -i ~/.ssh/rembro_deploy_key "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" "
+            set -e
+            cd '$APP_DIR'
+            tar -xf /tmp/rembro-deploy.tar
+            rm /tmp/rembro-deploy.tar
+            test -f .env || { echo 'Missing .env in '$APP_DIR'. Create it before deploying.'; exit 1; }
+            docker compose up -d --build
+            docker image prune -f
+          "
