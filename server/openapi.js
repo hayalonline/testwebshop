@@ -1,7 +1,7 @@
 export const openApiSpec = {
   openapi: "3.0.3",
   info: {
-    title: "Nordlane Webshop API",
+    title: "Rembro Webshop API",
     version: "1.0.0",
     description: "REST API voor producten, orders en admin-authenticatie."
   },
@@ -316,7 +316,7 @@ export function swaggerHtml() {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Nordlane API Docs</title>
+    <title>Rembro API Docs</title>
     <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css" />
   </head>
   <body>

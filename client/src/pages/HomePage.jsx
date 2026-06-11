@@ -15,7 +15,7 @@ export function HomePage() {
       <section className="hero">
         <div className="hero-content">
           <span className="eyebrow">Nieuwe collectie</span>
-          <h1>Nordlane</h1>
+          <h1>Rembro</h1>
           <p>Een moderne webshop met zorgvuldig geselecteerde essentials voor werk, wonen en onderweg.</p>
           <Link to="/shop" className="primary-link">Bekijk producten</Link>
         </div>
