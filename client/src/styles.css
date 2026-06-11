@@ -771,7 +771,7 @@ textarea:focus {
 
 .admin-product-row {
   display: grid;
-  grid-template-columns: 64px minmax(0, 1fr) 42px 42px;
+  grid-template-columns: 64px minmax(0, 1fr) auto auto;
   align-items: center;
   gap: 12px;
   border: 1px solid #e1eaf8;
@@ -799,6 +799,37 @@ textarea:focus {
 }
 
 .icon-button.danger {
+  color: #b42335;
+}
+
+.admin-editing-note {
+  max-width: 520px;
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.admin-row-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 40px;
+  border: 1px solid #cbd9ef;
+  border-radius: 6px;
+  padding: 0 11px;
+  background: white;
+  color: var(--blue-800);
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.admin-row-button:hover {
+  background: var(--blue-100);
+}
+
+.admin-row-button.danger {
   color: #b42335;
 }
 

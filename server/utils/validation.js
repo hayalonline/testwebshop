@@ -10,7 +10,8 @@ export function requireString(value, field, minLength = 1) {
 }
 
 export function requirePositiveNumber(value, field) {
-  const number = Number(value);
+  const normalized = typeof value === "string" ? value.replace(",", ".") : value;
+  const number = Number(normalized);
   if (!Number.isFinite(number) || number < 0) {
     throw httpError(400, `${field} moet een positief getal zijn.`);
   }

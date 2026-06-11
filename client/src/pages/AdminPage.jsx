@@ -23,6 +23,10 @@ function slugify(value) {
     .replace(/^-+|-+$/g, "");
 }
 
+function parseDecimal(value) {
+  return Number(String(value).replace(",", "."));
+}
+
 export function AdminPage() {
   const [token, setToken] = useState(() => sessionStorage.getItem("admin-token") || "");
   const [login, setLogin] = useState({ username: "admin", password: "" });
@@ -117,9 +121,19 @@ export function AdminPage() {
 
     const payload = {
       ...productForm,
-      price: Number(productForm.price),
+      price: parseDecimal(productForm.price),
       stock: Number(productForm.stock)
     };
+
+    if (!Number.isFinite(payload.price) || payload.price < 0) {
+      setError("Vul een geldige prijs in, bijvoorbeeld 79.95 of 79,95.");
+      return;
+    }
+
+    if (!Number.isInteger(payload.stock) || payload.stock < 0) {
+      setError("Vul een geldige voorraad in.");
+      return;
+    }
 
     try {
       if (editingId) {
@@ -248,6 +262,7 @@ export function AdminPage() {
             <div>
               <span className="eyebrow">Product</span>
               <h2>{editingId ? "Product wijzigen" : "Product toevoegen"}</h2>
+              {editingId && <p className="admin-editing-note">Je bewerkt product #{editingId}. Klik op Opslaan om de wijziging door te voeren.</p>}
             </div>
             <PackagePlus size={24} />
           </div>
@@ -287,11 +302,13 @@ export function AdminPage() {
                   <strong>{product.name}</strong>
                   <span>{product.category} - {formatPrice(product.price)} - voorraad {product.stock}</span>
                 </div>
-                <button className="icon-button" type="button" onClick={() => editProduct(product)} aria-label={`${product.name} wijzigen`}>
+                <button className="admin-row-button" type="button" onClick={() => editProduct(product)} aria-label={`${product.name} wijzigen`}>
                   <Edit3 size={17} />
+                  Wijzig
                 </button>
-                <button className="icon-button danger" type="button" onClick={() => deleteProduct(product.id)} aria-label={`${product.name} verwijderen`}>
+                <button className="admin-row-button danger" type="button" onClick={() => deleteProduct(product.id)} aria-label={`${product.name} verwijderen`}>
                   <Trash2 size={17} />
+                  Verwijder
                 </button>
               </article>
             ))}
