@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { db, withTransaction } from "../db/database.js";
+import { requireAdmin } from "../utils/auth.js";
 import { httpError } from "../utils/httpError.js";
 import { allowedStatuses, requirePositiveInteger, requireString, validateEmail } from "../utils/validation.js";
 
@@ -59,12 +60,12 @@ function validateOrder(body) {
   };
 }
 
-router.get("/", (_req, res) => {
+router.get("/", requireAdmin, (_req, res) => {
   const orders = db.prepare(`${orderSelect} ORDER BY created_at DESC`).all();
   res.json(orders);
 });
 
-router.get("/:id", (req, res, next) => {
+router.get("/:id", requireAdmin, (req, res, next) => {
   try {
     const order = getOrderWithItems(req.params.id);
     if (!order) throw httpError(404, "Order niet gevonden.");
@@ -135,7 +136,7 @@ router.post("/", (req, res, next) => {
   }
 });
 
-router.put("/:id/status", (req, res, next) => {
+router.put("/:id/status", requireAdmin, (req, res, next) => {
   try {
     const status = requireString(req.body.status, "Status");
     if (!allowedStatuses.includes(status)) {
@@ -155,7 +156,7 @@ router.put("/:id/status", (req, res, next) => {
   }
 });
 
-router.delete("/:id", (req, res, next) => {
+router.delete("/:id", requireAdmin, (req, res, next) => {
   try {
     const result = db.prepare("DELETE FROM orders WHERE id = ?").run(req.params.id);
     if (result.changes === 0) throw httpError(404, "Order niet gevonden.");

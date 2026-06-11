@@ -15,6 +15,7 @@ export function Layout({ children }) {
           <NavLink to="/">Home</NavLink>
           <NavLink to="/shop">Shop</NavLink>
           <NavLink to="/contact">Contact</NavLink>
+          <NavLink to="/admin">Admin</NavLink>
         </nav>
         <Link to="/winkelwagen" className="cart-link" aria-label="Winkelwagen">
           <ShoppingBag size={20} />

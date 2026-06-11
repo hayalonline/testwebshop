@@ -11,6 +11,7 @@ Een complete basis-webshop met React frontend, Express REST API en SQLite databa
 - Orders worden opgeslagen in SQLite met orderregels
 - Product CRUD API
 - Order API inclusief status wijzigen
+- Adminpagina met login voor product- en orderbeheer
 - Dummy producten worden automatisch aangemaakt
 
 ## Installatie
@@ -22,6 +23,25 @@ npm run dev
 
 De frontend draait op `http://localhost:5173`.
 De backend API draait op `http://localhost:3001`.
+
+Adminpagina:
+
+```text
+http://localhost:5173/admin
+```
+
+Standaard lokale login:
+
+```text
+Gebruiker: admin
+Wachtwoord: admin123
+```
+
+Je kunt dit aanpassen met environment variables:
+
+```bash
+ADMIN_USER=mijnadmin ADMIN_PASSWORD=sterkwachtwoord npm run dev
+```
 
 ## Handige scripts
 
@@ -43,6 +63,21 @@ server/data/webshop.sqlite
 Bij de eerste start maakt de backend de tabellen aan en vult hij producten wanneer de producttabel leeg is.
 
 ## API gebruik
+
+Voor beheeracties zoals producten aanmaken/wijzigen/verwijderen en orders bekijken/statussen wijzigen heb je een admin token nodig:
+
+```bash
+curl -X POST http://localhost:3001/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d "{\"username\":\"admin\",\"password\":\"admin123\"}"
+```
+
+Gebruik de waarde uit `token` daarna als bearer token:
+
+```bash
+curl http://localhost:3001/api/orders \
+  -H "Authorization: Bearer JOUW_TOKEN"
+```
 
 ### Producten
 

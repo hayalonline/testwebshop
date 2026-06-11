@@ -24,5 +24,38 @@ export const api = {
   createOrder: (payload) => request("/orders", {
     method: "POST",
     body: JSON.stringify(payload)
+  }),
+  adminLogin: (payload) => request("/auth/login", {
+    method: "POST",
+    body: JSON.stringify(payload)
+  }),
+  adminGetOrders: (token) => request("/orders", {
+    headers: { Authorization: `Bearer ${token}` }
+  }),
+  adminGetOrder: (id, token) => request(`/orders/${id}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  }),
+  adminCreateProduct: (payload, token) => request("/products", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(payload)
+  }),
+  adminUpdateProduct: (id, payload, token) => request(`/products/${id}`, {
+    method: "PUT",
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(payload)
+  }),
+  adminDeleteProduct: (id, token) => request(`/products/${id}`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${token}` }
+  }),
+  adminUpdateOrderStatus: (id, status, token) => request(`/orders/${id}/status`, {
+    method: "PUT",
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ status })
+  }),
+  adminDeleteOrder: (id, token) => request(`/orders/${id}`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${token}` }
   })
 };

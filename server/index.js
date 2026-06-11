@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { initializeDatabase } from "./db/database.js";
+import authRoutes from "./routes/auth.js";
 import productRoutes from "./routes/products.js";
 import orderRoutes from "./routes/orders.js";
 
@@ -16,6 +17,7 @@ app.get("/api/health", (_req, res) => {
   res.json({ status: "ok" });
 });
 
+app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 

@@ -7,6 +7,7 @@ import { ProductPage } from "./pages/ProductPage.jsx";
 import { CartPage } from "./pages/CartPage.jsx";
 import { CheckoutPage } from "./pages/CheckoutPage.jsx";
 import { ContactPage } from "./pages/ContactPage.jsx";
+import { AdminPage } from "./pages/AdminPage.jsx";
 import { NotFoundPage } from "./pages/NotFoundPage.jsx";
 
 export default function App() {
@@ -19,6 +20,7 @@ export default function App() {
         <Route path="/winkelwagen" element={<CartPage />} />
         <Route path="/afrekenen" element={<CheckoutPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/admin" element={<AdminPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Layout>

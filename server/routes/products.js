@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { db } from "../db/database.js";
+import { requireAdmin } from "../utils/auth.js";
 import { httpError } from "../utils/httpError.js";
 import { requirePositiveInteger, requirePositiveNumber, requireString } from "../utils/validation.js";
 
@@ -47,7 +48,7 @@ router.get("/:id", (req, res, next) => {
   }
 });
 
-router.post("/", (req, res, next) => {
+router.post("/", requireAdmin, (req, res, next) => {
   try {
     const product = mapProductInput(req.body);
     const result = db.prepare(`
@@ -66,7 +67,7 @@ router.post("/", (req, res, next) => {
   }
 });
 
-router.put("/:id", (req, res, next) => {
+router.put("/:id", requireAdmin, (req, res, next) => {
   try {
     const existing = db.prepare("SELECT id FROM products WHERE id = ?").get(req.params.id);
     if (!existing) throw httpError(404, "Product niet gevonden.");
@@ -96,7 +97,7 @@ router.put("/:id", (req, res, next) => {
   }
 });
 
-router.delete("/:id", (req, res, next) => {
+router.delete("/:id", requireAdmin, (req, res, next) => {
   try {
     const result = db.prepare("DELETE FROM products WHERE id = ?").run(req.params.id);
     if (result.changes === 0) throw httpError(404, "Product niet gevonden.");
