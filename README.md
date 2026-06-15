@@ -113,6 +113,22 @@ docker compose up -d --build
 
 Voor een echte domeinnaam zet je meestal Nginx Proxy Manager, Caddy, Traefik of Nginx voor deze container en proxy je naar `http://127.0.0.1:3001`.
 
+## n8n smoke test na main commits
+
+Er staat een importeerbare n8n workflow in:
+
+```text
+n8n/rembro-main-smoketest.workflow.json
+```
+
+Deze workflow kan via een GitHub webhook getriggerd worden bij pushes naar `main` en blijft de webshop controleren totdat homepage, API, producten en Swagger bereikbaar zijn.
+
+Zie de volledige instructies in:
+
+```text
+docs/N8N_SMOKETEST.md
+```
+
 ## Database
 
 De SQLite database wordt automatisch gemaakt op:

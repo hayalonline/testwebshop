@@ -1,0 +1,104 @@
+{
+  "name": "Rembro - GitHub main smoke test",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "rembro-main-smoketest",
+        "responseMode": "onReceived",
+        "responseData": "firstEntryJson",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "github-main-webhook",
+      "name": "GitHub Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [-720, 0],
+      "webhookId": "rembro-main-smoketest"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body || $json;\nconst headers = $json.headers || {};\nconst query = $json.query || {};\n\nconst expectedToken = $env.REMBRO_N8N_WEBHOOK_TOKEN || '';\nif (expectedToken && query.token !== expectedToken) {\n  return [{ json: { shouldRun: false, reason: 'Invalid webhook token' } }];\n}\n\nconst event = headers['x-github-event'] || headers['X-GitHub-Event'] || body.event || 'unknown';\nconst ref = body.ref || '';\nconst after = body.after || '';\nconst repository = body.repository?.full_name || 'unknown';\nconst pusher = body.pusher?.name || body.sender?.login || 'unknown';\n\nreturn [{\n  json: {\n    shouldRun: event === 'push' && ref === 'refs/heads/main',\n    event,\n    ref,\n    after,\n    repository,\n    pusher,\n    baseUrl: $env.REMBRO_BASE_URL || 'http://194.31.150.130:3001',\n    timeoutSeconds: Number($env.REMBRO_SMOKE_TIMEOUT_SECONDS || 300),\n    intervalSeconds: Number($env.REMBRO_SMOKE_INTERVAL_SECONDS || 10)\n  }\n}];"
+      },
+      "id": "prepare-event",
+      "name": "Validate main push",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-480, 0]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "should-run-main-smoke",
+              "leftValue": "={{ $json.shouldRun }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "is-main-push",
+      "name": "Is push to main?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [-240, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));\n\nconst baseUrl = $json.baseUrl.replace(/\\/$/, '');\nconst timeoutMs = Math.max(30, $json.timeoutSeconds) * 1000;\nconst intervalMs = Math.max(2, $json.intervalSeconds) * 1000;\nconst startedAt = Date.now();\nconst checks = [\n  { name: 'frontend', url: `${baseUrl}/`, expectText: 'Rembro' },\n  { name: 'health', url: `${baseUrl}/api/health`, expectText: 'ok' },\n  { name: 'products', url: `${baseUrl}/api/products`, expectText: 'Urban Rugzak' },\n  { name: 'swagger', url: `${baseUrl}/api-docs`, expectText: 'swagger-ui' }\n];\n\nasync function runChecks() {\n  const results = [];\n  for (const check of checks) {\n    const response = await fetch(check.url, { headers: { 'User-Agent': 'n8n-rembro-smoketest' } });\n    const text = await response.text();\n    const ok = response.ok && text.includes(check.expectText);\n    results.push({ name: check.name, url: check.url, status: response.status, ok });\n    if (!ok) return { ok: false, results };\n  }\n  return { ok: true, results };\n}\n\nlet attempt = 0;\nlet lastResult = null;\nwhile (Date.now() - startedAt <= timeoutMs) {\n  attempt += 1;\n  try {\n    lastResult = await runChecks();\n    if (lastResult.ok) {\n      return [{\n        json: {\n          status: 'verified',\n          attempts: attempt,\n          durationSeconds: Math.round((Date.now() - startedAt) / 1000),\n          repository: $json.repository,\n          commit: $json.after,\n          pusher: $json.pusher,\n          baseUrl,\n          checks: lastResult.results\n        }\n      }];\n    }\n  } catch (error) {\n    lastResult = { ok: false, error: error.message };\n  }\n  await sleep(intervalMs);\n}\n\nthrow new Error(`Rembro smoke test failed after ${attempt} attempts: ${JSON.stringify(lastResult)}`);"
+      },
+      "id": "smoke-test",
+      "name": "Smoke test until online",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [40, -100]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { status: 'ignored', reason: $json.reason || `Event ${$json.event} on ${$json.ref} is not a push to main` } }];"
+      },
+      "id": "ignored",
+      "name": "Ignore non-main events",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [40, 120]
+    }
+  ],
+  "connections": {
+    "GitHub Webhook": {
+      "main": [[{ "node": "Validate main push", "type": "main", "index": 0 }]]
+    },
+    "Validate main push": {
+      "main": [[{ "node": "Is push to main?", "type": "main", "index": 0 }]]
+    },
+    "Is push to main?": {
+      "main": [
+        [{ "node": "Smoke test until online", "type": "main", "index": 0 }],
+        [{ "node": "Ignore non-main events", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionTimeout": 600,
+    "saveManualExecutions": true
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "versionId": "rembro-main-smoketest-v1"
+}
