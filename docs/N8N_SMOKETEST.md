@@ -12,18 +12,17 @@ n8n/rembro-main-smoketest.workflow.json
 
 Activeer daarna de workflow.
 
-## Environment variables in n8n
+## Configuratie
 
-Zet deze environment variables op je n8n instantie:
+Deze workflow werkt zonder n8n environment variables. De instellingen staan direct in de workflow:
 
 ```text
-REMBRO_BASE_URL=http://194.31.150.130:3001
-REMBRO_SMOKE_TIMEOUT_SECONDS=300
-REMBRO_SMOKE_INTERVAL_SECONDS=10
-REMBRO_N8N_WEBHOOK_TOKEN=kies-een-lange-random-token
+Base URL: http://194.31.150.130:3001
+Timeout: 300 seconden
+Interval: 10 seconden
 ```
 
-`REMBRO_N8N_WEBHOOK_TOKEN` is optioneel, maar aanbevolen. Als je hem zet, moet GitHub dezelfde token als query parameter meesturen.
+Wil je later een ander domein of IP gebruiken, open dan de node `Validate main push` en wijzig `baseUrl`.
 
 ## GitHub webhook instellen
 
@@ -36,16 +35,10 @@ Repository > Settings > Webhooks > Add webhook
 Gebruik:
 
 ```text
-Payload URL: https://JOUW-N8N-DOMEIN/webhook/rembro-main-smoketest?token=JOUW_TOKEN
+Payload URL: https://JOUW-N8N-DOMEIN/webhook/rembro-main-smoketest
 Content type: application/json
 Events: Just the push event
 Active: aan
-```
-
-Gebruik zonder token alleen als je n8n webhook afgeschermd is:
-
-```text
-https://JOUW-N8N-DOMEIN/webhook/rembro-main-smoketest
 ```
 
 ## Wat wordt getest

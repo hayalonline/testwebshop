@@ -20,7 +20,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const body = $json.body || $json;\nconst headers = $json.headers || {};\nconst query = $json.query || {};\n\nconst expectedToken = $env.REMBRO_N8N_WEBHOOK_TOKEN || '';\nif (expectedToken && query.token !== expectedToken) {\n  return [{ json: { shouldRun: false, reason: 'Invalid webhook token' } }];\n}\n\nconst event = headers['x-github-event'] || headers['X-GitHub-Event'] || body.event || 'unknown';\nconst ref = body.ref || '';\nconst after = body.after || '';\nconst repository = body.repository?.full_name || 'unknown';\nconst pusher = body.pusher?.name || body.sender?.login || 'unknown';\n\nreturn [{\n  json: {\n    shouldRun: event === 'push' && ref === 'refs/heads/main',\n    event,\n    ref,\n    after,\n    repository,\n    pusher,\n    baseUrl: $env.REMBRO_BASE_URL || 'http://194.31.150.130:3001',\n    timeoutSeconds: Number($env.REMBRO_SMOKE_TIMEOUT_SECONDS || 300),\n    intervalSeconds: Number($env.REMBRO_SMOKE_INTERVAL_SECONDS || 10)\n  }\n}];"
+        "jsCode": "const body = $json.body || $json;\nconst headers = $json.headers || {};\n\nconst event = headers['x-github-event'] || headers['X-GitHub-Event'] || body.event || 'unknown';\nconst ref = body.ref || '';\nconst after = body.after || '';\nconst repository = body.repository?.full_name || 'unknown';\nconst pusher = body.pusher?.name || body.sender?.login || 'unknown';\n\nreturn [{\n  json: {\n    shouldRun: event === 'push' && ref === 'refs/heads/main',\n    event,\n    ref,\n    after,\n    repository,\n    pusher,\n    baseUrl: 'http://194.31.150.130:3001',\n    timeoutSeconds: 300,\n    intervalSeconds: 10\n  }\n}];"
       },
       "id": "prepare-event",
       "name": "Validate main push",

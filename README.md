@@ -121,7 +121,7 @@ Er staat een importeerbare n8n workflow in:
 n8n/rembro-main-smoketest.workflow.json
 ```
 
-Deze workflow kan via een GitHub webhook getriggerd worden bij pushes naar `main` en blijft de webshop controleren totdat homepage, API, producten en Swagger bereikbaar zijn.
+Deze workflow kan zonder n8n environment variables via een GitHub webhook getriggerd worden bij pushes naar `main` en blijft de webshop controleren totdat homepage, API, producten en Swagger bereikbaar zijn.
 
 Zie de volledige instructies in:
 
