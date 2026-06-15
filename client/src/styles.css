@@ -163,15 +163,7 @@ img {
 
 .admin-header-link {
   min-height: 46px;
-  border-color: rgba(255, 210, 63, 0.55);
-  background: var(--yellow-500);
-  color: var(--blue-950);
   font-weight: 900;
-}
-
-.admin-header-link:hover {
-  background: var(--yellow-400);
-  color: var(--blue-950);
 }
 
 .cart-link:hover {
