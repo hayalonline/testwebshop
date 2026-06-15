@@ -163,7 +163,15 @@ img {
 
 .admin-header-link {
   min-height: 46px;
+  border-color: #000000;
+  background: #000000;
+  color: #ffffff;
   font-weight: 900;
+}
+
+.admin-header-link:hover {
+  background: #1f1f1f;
+  color: #ffffff;
 }
 
 .cart-link:hover {
