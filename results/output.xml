@@ -1,0 +1,716 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 7.3.2 (Python 3.14.0 on darwin)" generated="2026-06-14T02:05:57.794390" rpa="false" schemaversion="5">
+<suite id="s1" name="Testwebshop" source="/Users/rgeutjes/Documents/testwebshop">
+<suite id="s1-s1" name="Tests" source="/Users/rgeutjes/Documents/testwebshop/tests">
+<suite id="s1-s1-s1" name="Regression" source="/Users/rgeutjes/Documents/testwebshop/tests/regression">
+<suite id="s1-s1-s1-s1" name="Api" source="/Users/rgeutjes/Documents/testwebshop/tests/regression/api">
+<suite id="s1-s1-s1-s1-s1" name="Api Server Regression" source="/Users/rgeutjes/Documents/testwebshop/tests/regression/api/api_server_regression.robot">
+<kw name="Create Api Session" owner="api_keywords" type="SETUP">
+<kw name="Create Session" owner="RequestsLibrary">
+<msg time="2026-06-14T02:05:57.931209" level="INFO">Creating Session using : alias=rembro_api, url=http://194.31.150.130:3001/api, headers={},                     cookies={}, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<arg>${API_SESSION}</arg>
+<arg>${API_URL}</arg>
+<doc>Create Session: create a HTTP session to a server</doc>
+<status status="PASS" start="2026-06-14T02:05:57.931085" elapsed="0.000255"/>
+</kw>
+<status status="PASS" start="2026-06-14T02:05:57.930750" elapsed="0.000665"/>
+</kw>
+<test id="s1-s1-s1-s1-s1-t1" name="Given Api When Health Is Requested Then Service Is Available" line="19">
+<kw name="Get Api Resource" owner="api_keywords">
+<kw name="GET On Session" owner="RequestsLibrary">
+<msg time="2026-06-14T02:05:57.974891" level="INFO">GET Request : url=http://194.31.150.130:3001/api/health 
+ path_url=/api/health 
+ headers={'User-Agent': 'python-requests/2.32.5', 'Accept-Encoding': 'gzip, deflate, zstd', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+ body=None 
+ </msg>
+<msg time="2026-06-14T02:05:57.975026" level="INFO">GET Response : url=http://194.31.150.130:3001/api/health 
+ status=200, reason=OK 
+ headers={'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '15', 'ETag': 'W/"f-VaSQ4oDUiZblZNAEkkN+sX+q3Sg"', 'Date': 'Sun, 14 Jun 2026 00:05:57 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'} 
+ body={"status":"ok"} 
+ </msg>
+<msg time="2026-06-14T02:05:57.975121" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<var>${response}</var>
+<arg>${API_SESSION}</arg>
+<arg>${endpoint}</arg>
+<arg>expected_status=${expected_status}</arg>
+<doc>Sends a GET request on a previously created HTTP Session.</doc>
+<status status="PASS" start="2026-06-14T02:05:57.932749" elapsed="0.042402"/>
+</kw>
+<return>
+<value>${response}</value>
+<status status="PASS" start="2026-06-14T02:05:57.975243" elapsed="0.000130"/>
+</return>
+<msg time="2026-06-14T02:05:57.975459" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<var>${response}</var>
+<arg>${HEALTH_ENDPOINT}</arg>
+<status status="PASS" start="2026-06-14T02:05:57.932576" elapsed="0.042915"/>
+</kw>
+<kw name="Value Should Equal" owner="generic_keywords">
+<kw name="Should Be Equal As Strings" owner="BuiltIn">
+<msg time="2026-06-14T02:05:57.976417" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${actual}</arg>
+<arg>${expected}</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<status status="PASS" start="2026-06-14T02:05:57.976286" elapsed="0.000185"/>
+</kw>
+<arg>${response.status_code}</arg>
+<arg>${HTTP_OK}</arg>
+<status status="PASS" start="2026-06-14T02:05:57.975713" elapsed="0.000812"/>
+</kw>
+<kw name="Response Body Should Contain Key" owner="api_keywords">
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2026-06-14T02:05:57.977250" level="INFO">${body} = {'status': 'ok'}</msg>
+<var>${body}</var>
+<arg>${response.json()}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2026-06-14T02:05:57.976847" elapsed="0.000443"/>
+</kw>
+<kw name="Dictionary Should Contain Key" owner="Collections">
+<arg>${body}</arg>
+<arg>${key}</arg>
+<doc>Fails if ``key`` is not found from ``dictionary``.</doc>
+<status status="PASS" start="2026-06-14T02:05:57.977363" elapsed="0.000127"/>
+</kw>
+<arg>${response}</arg>
+<arg>status</arg>
+<status status="PASS" start="2026-06-14T02:05:57.976642" elapsed="0.000896"/>
+</kw>
+<msg time="2026-06-14T02:05:57.993417" level="INFO">Starting Browser process /Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/site-packages/Browser/wrapper/index.js using at 127.0.0.1:64369</msg>
+<doc>API-GN-001</doc>
+<status status="PASS" start="2026-06-14T02:05:57.931469" elapsed="0.046157"/>
+</test>
+<test id="s1-s1-s1-s1-s1-t2" name="Given Api When Products Are Requested Then Catalog Is Returned" line="25">
+<kw name="Get Products Through Api" owner="api_keywords">
+<kw name="Get Api Resource" owner="api_keywords">
+<kw name="GET On Session" owner="RequestsLibrary">
+<msg time="2026-06-14T02:05:59.356493" level="INFO">GET Request : url=http://194.31.150.130:3001/api/products 
+ path_url=/api/products 
+ headers={'User-Agent': 'python-requests/2.32.5', 'Accept-Encoding': 'gzip, deflate, zstd', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+ body=None 
+ </msg>
+<msg time="2026-06-14T02:05:59.356686" level="INFO">GET Response : url=http://194.31.150.130:3001/api/products 
+ status=200, reason=OK 
+ headers={'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '2111', 'ETag': 'W/"83f-XsI3Kpb58p8qEa23gpNk8Se2COo"', 'Date': 'Sun, 14 Jun 2026 00:05:59 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'} 
+ body=[{"id":1,"name":"Urban Rugzak","slug":"urban-rugzak","description":"Waterafstotende rugzak met laptopvak en slimme opbergvakken.","price":79.95,"image":"https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&amp;fit=crop&amp;w=900&amp;q=80","stock":14,"category":"Tassen","createdAt":"2026-06-11 10:38:36","updatedAt":"2026-06-14 00:04:48"},{"id":2,"name":"Minimal Desk Lamp","slug":"minimal-desk-lamp","description":"Dimbare bureaulamp met aluminium afwerking en warm LED-licht.","price":59.5,"image":"https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&amp;fit=crop&amp;w=900&amp;q=80","stock":8,"category":"Wonen","createdAt":"2026-06-11 10:38:36","updatedAt":"2026-06-11 10:54:04"},{"id":3,"name":"Linnen Weekendtas","slug":"linnen-weekendtas","description":"Ruime weekendtas met verstevigde handvatten en afneembare schouderband.","price":119,"image":"https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&amp;fit=crop&amp;w=900&amp;q=80","stock":7,"category":"Reizen","createdAt":"2026-06-11 10:38:36","updatedAt":"2026-06-11 10:38:36"},{"id":4,"name":"Keramische Mok Set","slug":"keramische-mok-set","description":"Set van vier handgemaakte mokken met matte glazuurlaag.","price":34.95,"image":"https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?auto=format&amp;fit=crop&amp;w=900&amp;q=80","stock":24,"category":"Keuken","createdAt":"2026-06-11 10:38:36","updatedAt":"2026-06-11 10:38:36"},{"id":5,"name":"Wireless Charger Dock","slug":"wireless-charger-dock","description":"Snelle draadloze oplader met standaard voor telefoon en earbuds.","price":44.95,"image":"https://images.unsplash.com/photo-1615526675159-e248c3021d3f?auto=format&amp;fit=crop&amp;w=900&amp;q=80","stock":15,"category":"Tech","createdAt":"2026-06-11 10:38:36","updatedAt":"2026-06-11 10:38:36"},{"id":6,"name":"Merino Sjaal","slug":"merino-sjaal","description":"Zachte sjaal van merinowol, lichtgewicht en warm.","price":69,"image":"https://images.unsplash.com/photo-1520903920243-00d872a2d1c9?auto=format&amp;fit=crop&amp;w=900&amp;q=80","stock":12,"category":"Mode","createdAt":"2026-06-11 10:38:36","updatedAt":"2026-06-11 10:38:36"}] 
+ </msg>
+<msg time="2026-06-14T02:05:59.356861" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<var>${response}</var>
+<arg>${API_SESSION}</arg>
+<arg>${endpoint}</arg>
+<arg>expected_status=${expected_status}</arg>
+<doc>Sends a GET request on a previously created HTTP Session.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.337463" elapsed="0.019449"/>
+</kw>
+<return>
+<value>${response}</value>
+<status status="PASS" start="2026-06-14T02:05:59.357246" elapsed="0.001191"/>
+</return>
+<msg time="2026-06-14T02:05:59.359077" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<var>${response}</var>
+<arg>${PRODUCTS_ENDPOINT}</arg>
+<status status="PASS" start="2026-06-14T02:05:59.336938" elapsed="0.022256"/>
+</kw>
+<return>
+<value>${response}</value>
+<status status="PASS" start="2026-06-14T02:05:59.359326" elapsed="0.000447"/>
+</return>
+<msg time="2026-06-14T02:05:59.359946" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<var>${response}</var>
+<status status="PASS" start="2026-06-14T02:05:59.336482" elapsed="0.023527"/>
+</kw>
+<kw name="Value Should Equal" owner="generic_keywords">
+<kw name="Should Be Equal As Strings" owner="BuiltIn">
+<msg time="2026-06-14T02:05:59.361362" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${actual}</arg>
+<arg>${expected}</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.361172" elapsed="0.000262"/>
+</kw>
+<arg>${response.status_code}</arg>
+<arg>${HTTP_OK}</arg>
+<status status="PASS" start="2026-06-14T02:05:59.360312" elapsed="0.001196"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2026-06-14T02:05:59.362451" level="INFO">${products} = [{'id': 1, 'name': 'Urban Rugzak', 'slug': 'urban-rugzak', 'description': 'Waterafstotende rugzak met laptopvak en slimme opbergvakken.', 'price': 79.95, 'image': 'https://images.unsplash.com/photo-15...</msg>
+<var>${products}</var>
+<arg>${response.json()}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.361660" elapsed="0.000864"/>
+</kw>
+<kw name="Length Should Be" owner="BuiltIn">
+<msg time="2026-06-14T02:05:59.362869" level="INFO">Length is 6.</msg>
+<arg>${products}</arg>
+<arg>${EXPECTED_PRODUCT_COUNT}</arg>
+<doc>Verifies that the length of the given item is correct.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.362676" elapsed="0.000244"/>
+</kw>
+<doc>API-PR-001</doc>
+<status status="PASS" start="2026-06-14T02:05:59.331539" elapsed="0.031540"/>
+</test>
+<test id="s1-s1-s1-s1-s1-t3" name="Given Api When Product Id Is Requested Then Product Detail Is Returned" line="32">
+<kw name="Get Product Through Api" owner="api_keywords">
+<kw name="Get Api Resource" owner="api_keywords">
+<kw name="GET On Session" owner="RequestsLibrary">
+<msg time="2026-06-14T02:05:59.387543" level="INFO">GET Request : url=http://194.31.150.130:3001/api/products/1 
+ path_url=/api/products/1 
+ headers={'User-Agent': 'python-requests/2.32.5', 'Accept-Encoding': 'gzip, deflate, zstd', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+ body=None 
+ </msg>
+<msg time="2026-06-14T02:05:59.387679" level="INFO">GET Response : url=http://194.31.150.130:3001/api/products/1 
+ status=200, reason=OK 
+ headers={'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '342', 'ETag': 'W/"156-ZLM2BNXATOlGQ+FVPU2ye27fw00"', 'Date': 'Sun, 14 Jun 2026 00:05:59 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'} 
+ body={"id":1,"name":"Urban Rugzak","slug":"urban-rugzak","description":"Waterafstotende rugzak met laptopvak en slimme opbergvakken.","price":79.95,"image":"https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&amp;fit=crop&amp;w=900&amp;q=80","stock":14,"category":"Tassen","createdAt":"2026-06-11 10:38:36","updatedAt":"2026-06-14 00:04:48"} 
+ </msg>
+<msg time="2026-06-14T02:05:59.387784" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<var>${response}</var>
+<arg>${API_SESSION}</arg>
+<arg>${endpoint}</arg>
+<arg>expected_status=${expected_status}</arg>
+<doc>Sends a GET request on a previously created HTTP Session.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.370851" elapsed="0.016965"/>
+</kw>
+<return>
+<value>${response}</value>
+<status status="PASS" start="2026-06-14T02:05:59.387924" elapsed="0.000153"/>
+</return>
+<msg time="2026-06-14T02:05:59.388172" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<var>${response}</var>
+<arg>${PRODUCTS_ENDPOINT}/${product_identifier}</arg>
+<status status="PASS" start="2026-06-14T02:05:59.370633" elapsed="0.017575"/>
+</kw>
+<return>
+<value>${response}</value>
+<status status="PASS" start="2026-06-14T02:05:59.388271" elapsed="0.000405"/>
+</return>
+<msg time="2026-06-14T02:05:59.389024" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<var>${response}</var>
+<arg>${PRIMARY_PRODUCT_ID}</arg>
+<status status="PASS" start="2026-06-14T02:05:59.370353" elapsed="0.018816"/>
+</kw>
+<kw name="Value Should Equal" owner="generic_keywords">
+<kw name="Should Be Equal As Strings" owner="BuiltIn">
+<msg time="2026-06-14T02:05:59.390311" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${actual}</arg>
+<arg>${expected}</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.390159" elapsed="0.000209"/>
+</kw>
+<arg>${response.status_code}</arg>
+<arg>${HTTP_OK}</arg>
+<status status="PASS" start="2026-06-14T02:05:59.389486" elapsed="0.001291"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2026-06-14T02:05:59.392026" level="INFO">${product} = {'id': 1, 'name': 'Urban Rugzak', 'slug': 'urban-rugzak', 'description': 'Waterafstotende rugzak met laptopvak en slimme opbergvakken.', 'price': 79.95, 'image': 'https://images.unsplash.com/photo-155...</msg>
+<var>${product}</var>
+<arg>${response.json()}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.391308" elapsed="0.000775"/>
+</kw>
+<kw name="Dictionary Value Should Be" owner="generic_keywords">
+<kw name="Dictionary Should Contain Key" owner="Collections">
+<arg>${dictionary}</arg>
+<arg>${key}</arg>
+<doc>Fails if ``key`` is not found from ``dictionary``.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.392641" elapsed="0.000142"/>
+</kw>
+<kw name="Get From Dictionary" owner="Collections">
+<msg time="2026-06-14T02:05:59.392978" level="INFO">${actual} = Urban Rugzak</msg>
+<var>${actual}</var>
+<arg>${dictionary}</arg>
+<arg>${key}</arg>
+<doc>Returns a value from the given ``dictionary`` based on the given ``key``.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.392862" elapsed="0.000150"/>
+</kw>
+<kw name="Should Be Equal" owner="BuiltIn">
+<arg>${actual}</arg>
+<arg>${expected}</arg>
+<doc>Fails if the given objects are unequal.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.393091" elapsed="0.000166"/>
+</kw>
+<arg>${product}</arg>
+<arg>name</arg>
+<arg>${PRIMARY_PRODUCT_NAME}</arg>
+<status status="PASS" start="2026-06-14T02:05:59.392286" elapsed="0.001025"/>
+</kw>
+<doc>API-PR-002</doc>
+<status status="PASS" start="2026-06-14T02:05:59.367500" elapsed="0.025924"/>
+</test>
+<test id="s1-s1-s1-s1-s1-t4" name="Given Api When Product Slug Is Requested Then Product Detail Is Returned" line="39">
+<kw name="Get Product Through Api" owner="api_keywords">
+<kw name="Get Api Resource" owner="api_keywords">
+<kw name="GET On Session" owner="RequestsLibrary">
+<msg time="2026-06-14T02:05:59.419208" level="INFO">GET Request : url=http://194.31.150.130:3001/api/products/urban-rugzak 
+ path_url=/api/products/urban-rugzak 
+ headers={'User-Agent': 'python-requests/2.32.5', 'Accept-Encoding': 'gzip, deflate, zstd', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+ body=None 
+ </msg>
+<msg time="2026-06-14T02:05:59.419377" level="INFO">GET Response : url=http://194.31.150.130:3001/api/products/urban-rugzak 
+ status=200, reason=OK 
+ headers={'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '342', 'ETag': 'W/"156-ZLM2BNXATOlGQ+FVPU2ye27fw00"', 'Date': 'Sun, 14 Jun 2026 00:05:59 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'} 
+ body={"id":1,"name":"Urban Rugzak","slug":"urban-rugzak","description":"Waterafstotende rugzak met laptopvak en slimme opbergvakken.","price":79.95,"image":"https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&amp;fit=crop&amp;w=900&amp;q=80","stock":14,"category":"Tassen","createdAt":"2026-06-11 10:38:36","updatedAt":"2026-06-14 00:04:48"} 
+ </msg>
+<msg time="2026-06-14T02:05:59.419528" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<var>${response}</var>
+<arg>${API_SESSION}</arg>
+<arg>${endpoint}</arg>
+<arg>expected_status=${expected_status}</arg>
+<doc>Sends a GET request on a previously created HTTP Session.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.399089" elapsed="0.020472"/>
+</kw>
+<return>
+<value>${response}</value>
+<status status="PASS" start="2026-06-14T02:05:59.419665" elapsed="0.000140"/>
+</return>
+<msg time="2026-06-14T02:05:59.419911" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<var>${response}</var>
+<arg>${PRODUCTS_ENDPOINT}/${product_identifier}</arg>
+<status status="PASS" start="2026-06-14T02:05:59.398904" elapsed="0.021043"/>
+</kw>
+<return>
+<value>${response}</value>
+<status status="PASS" start="2026-06-14T02:05:59.420007" elapsed="0.000088"/>
+</return>
+<msg time="2026-06-14T02:05:59.420180" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<var>${response}</var>
+<arg>${PRIMARY_PRODUCT_SLUG}</arg>
+<status status="PASS" start="2026-06-14T02:05:59.398669" elapsed="0.021553"/>
+</kw>
+<kw name="Value Should Equal" owner="generic_keywords">
+<kw name="Should Be Equal As Strings" owner="BuiltIn">
+<msg time="2026-06-14T02:05:59.421227" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${actual}</arg>
+<arg>${expected}</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.421073" elapsed="0.000201"/>
+</kw>
+<arg>${response.status_code}</arg>
+<arg>${HTTP_OK}</arg>
+<status status="PASS" start="2026-06-14T02:05:59.420498" elapsed="0.000829"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2026-06-14T02:05:59.421802" level="INFO">${product} = {'id': 1, 'name': 'Urban Rugzak', 'slug': 'urban-rugzak', 'description': 'Waterafstotende rugzak met laptopvak en slimme opbergvakken.', 'price': 79.95, 'image': 'https://images.unsplash.com/photo-155...</msg>
+<var>${product}</var>
+<arg>${response.json()}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.421409" elapsed="0.000425"/>
+</kw>
+<kw name="Dictionary Value Should Be" owner="generic_keywords">
+<kw name="Dictionary Should Contain Key" owner="Collections">
+<arg>${dictionary}</arg>
+<arg>${key}</arg>
+<doc>Fails if ``key`` is not found from ``dictionary``.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.422220" elapsed="0.000116"/>
+</kw>
+<kw name="Get From Dictionary" owner="Collections">
+<msg time="2026-06-14T02:05:59.422509" level="INFO">${actual} = urban-rugzak</msg>
+<var>${actual}</var>
+<arg>${dictionary}</arg>
+<arg>${key}</arg>
+<doc>Returns a value from the given ``dictionary`` based on the given ``key``.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.422405" elapsed="0.000134"/>
+</kw>
+<kw name="Should Be Equal" owner="BuiltIn">
+<arg>${actual}</arg>
+<arg>${expected}</arg>
+<doc>Fails if the given objects are unequal.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.422611" elapsed="0.000107"/>
+</kw>
+<arg>${product}</arg>
+<arg>slug</arg>
+<arg>${PRIMARY_PRODUCT_SLUG}</arg>
+<status status="PASS" start="2026-06-14T02:05:59.421966" elapsed="0.000799"/>
+</kw>
+<doc>API-PR-003</doc>
+<status status="PASS" start="2026-06-14T02:05:59.396719" elapsed="0.026136"/>
+</test>
+<test id="s1-s1-s1-s1-s1-t5" name="Given Admin Credentials When Login Is Posted Then Token Is Returned" line="46">
+<kw name="Login Through Api" owner="api_keywords">
+<kw name="Post Api Resource" owner="api_keywords">
+<kw name="Create Json Headers" owner="generic_keywords">
+<kw name="Create Dictionary" owner="BuiltIn">
+<msg time="2026-06-14T02:05:59.430927" level="INFO">${headers} = {'Content-Type': 'application/json'}</msg>
+<var>${headers}</var>
+<arg>Content-Type=${CONTENT_TYPE_JSON}</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.430752" elapsed="0.000221"/>
+</kw>
+<return>
+<value>${headers}</value>
+<status status="PASS" start="2026-06-14T02:05:59.431028" elapsed="0.000088"/>
+</return>
+<msg time="2026-06-14T02:05:59.431176" level="INFO">${headers} = {'Content-Type': 'application/json'}</msg>
+<var>${headers}</var>
+<status status="PASS" start="2026-06-14T02:05:59.430608" elapsed="0.000597"/>
+</kw>
+<kw name="POST On Session" owner="RequestsLibrary">
+<msg time="2026-06-14T02:05:59.447839" level="INFO">POST Request : url=http://194.31.150.130:3001/api/auth/login 
+ path_url=/api/auth/login 
+ headers={'User-Agent': 'python-requests/2.32.5', 'Accept-Encoding': 'gzip, deflate, zstd', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json', 'Content-Length': '45'} 
+ body=b'{"username": "admin", "password": "admin123"}' 
+ </msg>
+<msg time="2026-06-14T02:05:59.447970" level="INFO">POST Response : url=http://194.31.150.130:3001/api/auth/login 
+ status=200, reason=OK 
+ headers={'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '104', 'ETag': 'W/"68-K3zvGHYvpxE1VO11bmKqMs7Miww"', 'Date': 'Sun, 14 Jun 2026 00:05:59 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'} 
+ body={"token":"ccd53b160a8cea9990763a132cefca517a92830046428e5b798fb6d2103893a0","user":{"username":"admin"}} 
+ </msg>
+<msg time="2026-06-14T02:05:59.448074" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<var>${response}</var>
+<arg>${API_SESSION}</arg>
+<arg>${endpoint}</arg>
+<arg>json=${payload}</arg>
+<arg>headers=${headers}</arg>
+<arg>expected_status=${expected_status}</arg>
+<doc>Sends a POST request on a previously created HTTP Session.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.431270" elapsed="0.016835"/>
+</kw>
+<return>
+<value>${response}</value>
+<status status="PASS" start="2026-06-14T02:05:59.448213" elapsed="0.000205"/>
+</return>
+<msg time="2026-06-14T02:05:59.448511" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<var>${response}</var>
+<arg>${LOGIN_ENDPOINT}</arg>
+<arg>${credentials}</arg>
+<status status="PASS" start="2026-06-14T02:05:59.430425" elapsed="0.018121"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2026-06-14T02:05:59.449258" level="INFO">${body} = {'token': 'ccd53b160a8cea9990763a132cefca517a92830046428e5b798fb6d2103893a0', 'user': {'username': 'admin'}}</msg>
+<var>${body}</var>
+<arg>${response.json()}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.448659" elapsed="0.000634"/>
+</kw>
+<kw name="Dictionary Value Should Not Be Empty" owner="generic_keywords">
+<kw name="Dictionary Should Contain Key" owner="Collections">
+<arg>${dictionary}</arg>
+<arg>${key}</arg>
+<doc>Fails if ``key`` is not found from ``dictionary``.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.449593" elapsed="0.000200"/>
+</kw>
+<kw name="Get From Dictionary" owner="Collections">
+<msg time="2026-06-14T02:05:59.450019" level="INFO">${actual} = ccd53b160a8cea9990763a132cefca517a92830046428e5b798fb6d2103893a0</msg>
+<var>${actual}</var>
+<arg>${dictionary}</arg>
+<arg>${key}</arg>
+<doc>Returns a value from the given ``dictionary`` based on the given ``key``.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.449891" elapsed="0.000167"/>
+</kw>
+<kw name="Should Not Be Empty" owner="BuiltIn">
+<msg time="2026-06-14T02:05:59.450260" level="INFO">Length is 64.</msg>
+<arg>${actual}</arg>
+<doc>Verifies that the given item is not empty.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.450127" elapsed="0.000174"/>
+</kw>
+<arg>${body}</arg>
+<arg>token</arg>
+<status status="PASS" start="2026-06-14T02:05:59.449399" elapsed="0.000953"/>
+</kw>
+<return>
+<value>${body}</value>
+<status status="PASS" start="2026-06-14T02:05:59.450393" elapsed="0.000049"/>
+</return>
+<msg time="2026-06-14T02:05:59.450499" level="INFO">${body} = {'token': 'ccd53b160a8cea9990763a132cefca517a92830046428e5b798fb6d2103893a0', 'user': {'username': 'admin'}}</msg>
+<var>${body}</var>
+<arg>${ADMIN_CREDENTIALS}</arg>
+<status status="PASS" start="2026-06-14T02:05:59.430171" elapsed="0.020356"/>
+</kw>
+<kw name="Dictionary Value Should Not Be Empty" owner="generic_keywords">
+<kw name="Dictionary Should Contain Key" owner="Collections">
+<arg>${dictionary}</arg>
+<arg>${key}</arg>
+<doc>Fails if ``key`` is not found from ``dictionary``.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.450897" elapsed="0.000110"/>
+</kw>
+<kw name="Get From Dictionary" owner="Collections">
+<msg time="2026-06-14T02:05:59.451176" level="INFO">${actual} = ccd53b160a8cea9990763a132cefca517a92830046428e5b798fb6d2103893a0</msg>
+<var>${actual}</var>
+<arg>${dictionary}</arg>
+<arg>${key}</arg>
+<doc>Returns a value from the given ``dictionary`` based on the given ``key``.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.451071" elapsed="0.000137"/>
+</kw>
+<kw name="Should Not Be Empty" owner="BuiltIn">
+<msg time="2026-06-14T02:05:59.451413" level="INFO">Length is 64.</msg>
+<arg>${actual}</arg>
+<doc>Verifies that the given item is not empty.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.451269" elapsed="0.000195"/>
+</kw>
+<arg>${body}</arg>
+<arg>token</arg>
+<status status="PASS" start="2026-06-14T02:05:59.450685" elapsed="0.000827"/>
+</kw>
+<doc>API-AU-001</doc>
+<status status="PASS" start="2026-06-14T02:05:59.427905" elapsed="0.023718"/>
+</test>
+<test id="s1-s1-s1-s1-s1-t6" name="Given Protected Orders When No Token Is Sent Then Request Is Unauthorized" line="51">
+<kw name="Get Api Resource" owner="api_keywords">
+<kw name="GET On Session" owner="RequestsLibrary">
+<msg time="2026-06-14T02:05:59.482211" level="INFO">GET Request : url=http://194.31.150.130:3001/api/orders 
+ path_url=/api/orders 
+ headers={'User-Agent': 'python-requests/2.32.5', 'Accept-Encoding': 'gzip, deflate, zstd', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+ body=None 
+ </msg>
+<msg time="2026-06-14T02:05:59.482338" level="INFO">GET Response : url=http://194.31.150.130:3001/api/orders 
+ status=401, reason=Unauthorized 
+ headers={'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '38', 'ETag': 'W/"26-2gH56EgoSYVznDJd9G3hCHUmrUY"', 'Date': 'Sun, 14 Jun 2026 00:05:59 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'} 
+ body={"message":"Niet ingelogd als admin."} 
+ </msg>
+<msg time="2026-06-14T02:05:59.482430" level="INFO">${response} = &lt;Response [401]&gt;</msg>
+<var>${response}</var>
+<arg>${API_SESSION}</arg>
+<arg>${endpoint}</arg>
+<arg>expected_status=${expected_status}</arg>
+<doc>Sends a GET request on a previously created HTTP Session.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.457116" elapsed="0.025341"/>
+</kw>
+<return>
+<value>${response}</value>
+<status status="PASS" start="2026-06-14T02:05:59.482553" elapsed="0.000180"/>
+</return>
+<msg time="2026-06-14T02:05:59.482828" level="INFO">${response} = &lt;Response [401]&gt;</msg>
+<var>${response}</var>
+<arg>${ORDERS_ENDPOINT}</arg>
+<arg>${HTTP_UNAUTHORIZED}</arg>
+<status status="PASS" start="2026-06-14T02:05:59.456398" elapsed="0.026470"/>
+</kw>
+<kw name="Value Should Equal" owner="generic_keywords">
+<kw name="Should Be Equal As Strings" owner="BuiltIn">
+<msg time="2026-06-14T02:05:59.483758" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${actual}</arg>
+<arg>${expected}</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.483636" elapsed="0.000166"/>
+</kw>
+<arg>${response.status_code}</arg>
+<arg>${HTTP_UNAUTHORIZED}</arg>
+<status status="PASS" start="2026-06-14T02:05:59.483059" elapsed="0.000791"/>
+</kw>
+<kw name="Response Body Should Contain Key" owner="api_keywords">
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2026-06-14T02:05:59.484609" level="INFO">${body} = {'message': 'Niet ingelogd als admin.'}</msg>
+<var>${body}</var>
+<arg>${response.json()}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.484195" elapsed="0.000451"/>
+</kw>
+<kw name="Dictionary Should Contain Key" owner="Collections">
+<arg>${body}</arg>
+<arg>${key}</arg>
+<doc>Fails if ``key`` is not found from ``dictionary``.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.484717" elapsed="0.000139"/>
+</kw>
+<arg>${response}</arg>
+<arg>message</arg>
+<status status="PASS" start="2026-06-14T02:05:59.483994" elapsed="0.000911"/>
+</kw>
+<doc>API-AU-005</doc>
+<status status="PASS" start="2026-06-14T02:05:59.454478" elapsed="0.030527"/>
+</test>
+<test id="s1-s1-s1-s1-s1-t7" name="Given Admin Token When Orders Are Requested Then Orders Are Returned" line="57">
+<kw name="Login Through Api" owner="api_keywords">
+<kw name="Post Api Resource" owner="api_keywords">
+<kw name="Create Json Headers" owner="generic_keywords">
+<kw name="Create Dictionary" owner="BuiltIn">
+<msg time="2026-06-14T02:05:59.493248" level="INFO">${headers} = {'Content-Type': 'application/json'}</msg>
+<var>${headers}</var>
+<arg>Content-Type=${CONTENT_TYPE_JSON}</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.493082" elapsed="0.000234"/>
+</kw>
+<return>
+<value>${headers}</value>
+<status status="PASS" start="2026-06-14T02:05:59.493384" elapsed="0.000133"/>
+</return>
+<msg time="2026-06-14T02:05:59.493582" level="INFO">${headers} = {'Content-Type': 'application/json'}</msg>
+<var>${headers}</var>
+<status status="PASS" start="2026-06-14T02:05:59.492941" elapsed="0.000684"/>
+</kw>
+<kw name="POST On Session" owner="RequestsLibrary">
+<msg time="2026-06-14T02:05:59.509637" level="INFO">POST Request : url=http://194.31.150.130:3001/api/auth/login 
+ path_url=/api/auth/login 
+ headers={'User-Agent': 'python-requests/2.32.5', 'Accept-Encoding': 'gzip, deflate, zstd', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json', 'Content-Length': '45'} 
+ body=b'{"username": "admin", "password": "admin123"}' 
+ </msg>
+<msg time="2026-06-14T02:05:59.509760" level="INFO">POST Response : url=http://194.31.150.130:3001/api/auth/login 
+ status=200, reason=OK 
+ headers={'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '104', 'ETag': 'W/"68-K3zvGHYvpxE1VO11bmKqMs7Miww"', 'Date': 'Sun, 14 Jun 2026 00:05:59 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'} 
+ body={"token":"ccd53b160a8cea9990763a132cefca517a92830046428e5b798fb6d2103893a0","user":{"username":"admin"}} 
+ </msg>
+<msg time="2026-06-14T02:05:59.509859" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<var>${response}</var>
+<arg>${API_SESSION}</arg>
+<arg>${endpoint}</arg>
+<arg>json=${payload}</arg>
+<arg>headers=${headers}</arg>
+<arg>expected_status=${expected_status}</arg>
+<doc>Sends a POST request on a previously created HTTP Session.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.493792" elapsed="0.016096"/>
+</kw>
+<return>
+<value>${response}</value>
+<status status="PASS" start="2026-06-14T02:05:59.509984" elapsed="0.000196"/>
+</return>
+<msg time="2026-06-14T02:05:59.510266" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<var>${response}</var>
+<arg>${LOGIN_ENDPOINT}</arg>
+<arg>${credentials}</arg>
+<status status="PASS" start="2026-06-14T02:05:59.492728" elapsed="0.017571"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2026-06-14T02:05:59.510990" level="INFO">${body} = {'token': 'ccd53b160a8cea9990763a132cefca517a92830046428e5b798fb6d2103893a0', 'user': {'username': 'admin'}}</msg>
+<var>${body}</var>
+<arg>${response.json()}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.510403" elapsed="0.000632"/>
+</kw>
+<kw name="Dictionary Value Should Not Be Empty" owner="generic_keywords">
+<kw name="Dictionary Should Contain Key" owner="Collections">
+<arg>${dictionary}</arg>
+<arg>${key}</arg>
+<doc>Fails if ``key`` is not found from ``dictionary``.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.511386" elapsed="0.000116"/>
+</kw>
+<kw name="Get From Dictionary" owner="Collections">
+<msg time="2026-06-14T02:05:59.511678" level="INFO">${actual} = ccd53b160a8cea9990763a132cefca517a92830046428e5b798fb6d2103893a0</msg>
+<var>${actual}</var>
+<arg>${dictionary}</arg>
+<arg>${key}</arg>
+<doc>Returns a value from the given ``dictionary`` based on the given ``key``.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.511573" elapsed="0.000155"/>
+</kw>
+<kw name="Should Not Be Empty" owner="BuiltIn">
+<msg time="2026-06-14T02:05:59.511917" level="INFO">Length is 64.</msg>
+<arg>${actual}</arg>
+<doc>Verifies that the given item is not empty.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.511788" elapsed="0.000167"/>
+</kw>
+<arg>${body}</arg>
+<arg>token</arg>
+<status status="PASS" start="2026-06-14T02:05:59.511155" elapsed="0.000844"/>
+</kw>
+<return>
+<value>${body}</value>
+<status status="PASS" start="2026-06-14T02:05:59.512039" elapsed="0.000100"/>
+</return>
+<msg time="2026-06-14T02:05:59.512216" level="INFO">${body} = {'token': 'ccd53b160a8cea9990763a132cefca517a92830046428e5b798fb6d2103893a0', 'user': {'username': 'admin'}}</msg>
+<var>${body}</var>
+<arg>${ADMIN_CREDENTIALS}</arg>
+<status status="PASS" start="2026-06-14T02:05:59.492026" elapsed="0.020229"/>
+</kw>
+<kw name="Get From Dictionary" owner="Collections">
+<msg time="2026-06-14T02:05:59.512555" level="INFO">${token} = ccd53b160a8cea9990763a132cefca517a92830046428e5b798fb6d2103893a0</msg>
+<var>${token}</var>
+<arg>${body}</arg>
+<arg>token</arg>
+<doc>Returns a value from the given ``dictionary`` based on the given ``key``.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.512392" elapsed="0.000196"/>
+</kw>
+<kw name="Get Authorized Orders Through Api" owner="api_keywords">
+<kw name="Create Bearer Headers" owner="generic_keywords">
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2026-06-14T02:05:59.513090" level="INFO">${authorization} = Bearer ccd53b160a8cea9990763a132cefca517a92830046428e5b798fb6d2103893a0</msg>
+<var>${authorization}</var>
+<arg>${BEARER_PREFIX} ${token}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.512995" elapsed="0.000122"/>
+</kw>
+<kw name="Create Dictionary" owner="BuiltIn">
+<msg time="2026-06-14T02:05:59.513377" level="INFO">${headers} = {'Content-Type': 'application/json', 'Authorization': 'Bearer ccd53b160a8cea9990763a132cefca517a92830046428e5b798fb6d2103893a0'}</msg>
+<var>${headers}</var>
+<arg>Content-Type=${CONTENT_TYPE_JSON}</arg>
+<arg>${AUTHORIZATION_HEADER}=${authorization}</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.513183" elapsed="0.000224"/>
+</kw>
+<return>
+<value>${headers}</value>
+<status status="PASS" start="2026-06-14T02:05:59.513447" elapsed="0.000089"/>
+</return>
+<msg time="2026-06-14T02:05:59.513598" level="INFO">${headers} = {'Content-Type': 'application/json', 'Authorization': 'Bearer ccd53b160a8cea9990763a132cefca517a92830046428e5b798fb6d2103893a0'}</msg>
+<var>${headers}</var>
+<arg>${token}</arg>
+<status status="PASS" start="2026-06-14T02:05:59.512878" elapsed="0.000761"/>
+</kw>
+<kw name="GET On Session" owner="RequestsLibrary">
+<msg time="2026-06-14T02:05:59.531964" level="INFO">GET Request : url=http://194.31.150.130:3001/api/orders 
+ path_url=/api/orders 
+ headers={'User-Agent': 'python-requests/2.32.5', 'Accept-Encoding': 'gzip, deflate, zstd', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json', 'Authorization': 'Bearer ccd53b160a8cea9990763a132cefca517a92830046428e5b798fb6d2103893a0'} 
+ body=None 
+ </msg>
+<msg time="2026-06-14T02:05:59.532091" level="INFO">GET Response : url=http://194.31.150.130:3001/api/orders 
+ status=200, reason=OK 
+ headers={'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '1318', 'ETag': 'W/"526-JBVlg8YoEiIMZQxsyNcALenOEaQ"', 'Date': 'Sun, 14 Jun 2026 00:05:59 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'} 
+ body=[{"id":5,"customerName":"Test Klant","email":"klant@test.local","phone":"+31 20 000 0000","address":"Teststraat 1","postalCode":"1012 AB","city":"Amsterdam","totalAmount":79.95,"orderStatus":"nieuw","createdAt":"2026-06-14 00:04:48","updatedAt":"2026-06-14 00:04:48"},{"id":4,"customerName":"Test Klant","email":"klant@test.local","phone":"+31 20 000 0000","address":"Teststraat 1","postalCode":"1012 AB","city":"Amsterdam","totalAmount":79.95,"orderStatus":"nieuw","createdAt":"2026-06-13 23:35:19","updatedAt":"2026-06-13 23:35:19"},{"id":3,"customerName":"Test Klant","email":"klant@test.local","phone":"+31 20 000 0000","address":"Teststraat 1","postalCode":"1012 AB","city":"Amsterdam","totalAmount":79.95,"orderStatus":"nieuw","createdAt":"2026-06-13 23:32:07","updatedAt":"2026-06-13 23:32:07"},{"id":2,"customerName":"Test Klant","email":"klant@test.local","phone":"+31 20 000 0000","address":"Teststraat 1","postalCode":"1012 AB","city":"Amsterdam","totalAmount":79.95,"orderStatus":"nieuw","createdAt":"2026-06-13 23:27:55","updatedAt":"2026-06-13 23:27:55"},{"id":1,"customerName":"asdasd","email":"asdsa@asdasdas.com","phone":"asdasdas","address":"asdasd","postalCode":"asdasd","city":"asdasd","totalAmount":139.45,"orderStatus":"nieuw","createdAt":"2026-06-11 10:54:04","updatedAt":"2026-06-11 10:54:04"}] 
+ </msg>
+<msg time="2026-06-14T02:05:59.532185" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<var>${response}</var>
+<arg>${API_SESSION}</arg>
+<arg>${ORDERS_ENDPOINT}</arg>
+<arg>headers=${headers}</arg>
+<arg>expected_status=${HTTP_OK}</arg>
+<doc>Sends a GET request on a previously created HTTP Session.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.513712" elapsed="0.018499"/>
+</kw>
+<return>
+<value>${response}</value>
+<status status="PASS" start="2026-06-14T02:05:59.532305" elapsed="0.000188"/>
+</return>
+<msg time="2026-06-14T02:05:59.532587" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<var>${response}</var>
+<arg>${token}</arg>
+<status status="PASS" start="2026-06-14T02:05:59.512729" elapsed="0.019893"/>
+</kw>
+<kw name="Value Should Equal" owner="generic_keywords">
+<kw name="Should Be Equal As Strings" owner="BuiltIn">
+<msg time="2026-06-14T02:05:59.533481" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${actual}</arg>
+<arg>${expected}</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<status status="PASS" start="2026-06-14T02:05:59.533378" elapsed="0.000143"/>
+</kw>
+<arg>${response.status_code}</arg>
+<arg>${HTTP_OK}</arg>
+<status status="PASS" start="2026-06-14T02:05:59.532884" elapsed="0.000680"/>
+</kw>
+<doc>API-OR-001</doc>
+<status status="PASS" start="2026-06-14T02:05:59.488282" elapsed="0.045410"/>
+</test>
+<status status="PASS" start="2026-06-14T02:05:57.808780" elapsed="1.727939"/>
+</suite>
+<status status="PASS" start="2026-06-14T02:05:57.807470" elapsed="1.732237"/>
+</suite>
+<status status="PASS" start="2026-06-14T02:05:57.806591" elapsed="1.734454"/>
+</suite>
+<status status="PASS" start="2026-06-14T02:05:57.805465" elapsed="1.737807"/>
+</suite>
+<status status="PASS" start="2026-06-14T02:05:57.796412" elapsed="1.747827"/>
+</suite>
+<statistics>
+<total>
+<stat pass="7" fail="0" skip="0">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat name="Testwebshop" id="s1" pass="7" fail="0" skip="0">Testwebshop</stat>
+<stat name="Tests" id="s1-s1" pass="7" fail="0" skip="0">Testwebshop.Tests</stat>
+<stat name="Regression" id="s1-s1-s1" pass="7" fail="0" skip="0">Testwebshop.Tests.Regression</stat>
+<stat name="Api" id="s1-s1-s1-s1" pass="7" fail="0" skip="0">Testwebshop.Tests.Regression.Api</stat>
+<stat name="Api Server Regression" id="s1-s1-s1-s1-s1" pass="7" fail="0" skip="0">Testwebshop.Tests.Regression.Api.Api Server Regression</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>
