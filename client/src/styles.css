@@ -163,14 +163,14 @@ img {
 
 .admin-header-link {
   min-height: 46px;
-  border-color: #000000;
-  background: #000000;
+  border-color: #c1121f;
+  background: #c1121f;
   color: #ffffff;
   font-weight: 900;
 }
 
 .admin-header-link:hover {
-  background: #1f1f1f;
+  background: #9f0f1a;
   color: #ffffff;
 }
 
