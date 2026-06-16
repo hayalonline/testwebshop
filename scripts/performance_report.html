@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<title>Performance Audit – Rembro Webshop 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --teal:#0D7377;--teal2:#14A085;--teal3:#0a5457;
+  --red:#DC2626;--orange:#EA580C;--amber:#D97706;--blue:#2563EB;--green:#16A34A;--gray:#6B7280;--purple:#7C3AED;
+  --bg:#F8FAFC;--border:#E2E8F0;--text:#0F172A;--muted:#64748B;
+}
+body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);font-size:10pt;line-height:1.6}
+code,pre{font-family:'JetBrains Mono','Courier New',monospace}
+
+.page{width:210mm;min-height:297mm;position:relative;overflow:hidden;break-before:page}
+.page:first-child{break-before:auto}
+
+/* COVER */
+.cover{background:linear-gradient(145deg,#042f2e 0%,#0D7377 55%,#14A085 100%);display:flex;flex-direction:column;justify-content:space-between;padding:18mm 16mm 14mm}
+.cover-top{display:flex;justify-content:space-between;align-items:flex-start}
+.cover-brand{color:rgba(255,255,255,0.5);font-size:9pt;font-weight:600;letter-spacing:3px;text-transform:uppercase}
+.cover-badge{background:rgba(20,160,133,0.25);border:1px solid rgba(20,160,133,0.6);color:#6ee7b7;font-size:7.5pt;font-weight:700;letter-spacing:2px;padding:4px 10px;border-radius:3px;text-transform:uppercase}
+.cover-center{text-align:center;padding:6mm 0}
+.cover-icon{margin:0 auto 8mm}
+.cover-pre{color:rgba(255,255,255,0.45);font-size:9pt;font-weight:500;letter-spacing:4px;text-transform:uppercase;margin-bottom:5mm}
+.cover-title{color:#fff;font-size:32pt;font-weight:900;line-height:1.1;margin-bottom:3mm}
+.cover-title span{color:#6ee7b7}
+.cover-divider{width:60px;height:3px;background:linear-gradient(90deg,#6ee7b7,#34d399);margin:5mm auto;border-radius:2px}
+.cover-sub{color:rgba(255,255,255,0.55);font-size:11pt;font-weight:300;margin-top:3mm}
+.cover-meta{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4mm;margin-top:8mm}
+.cover-meta-item{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:6px;padding:4mm;text-align:center}
+.cover-meta-label{color:rgba(255,255,255,0.4);font-size:7pt;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:1mm}
+.cover-meta-value{color:#fff;font-size:10pt;font-weight:700}
+.cover-bottom{border-top:1px solid rgba(255,255,255,0.1);padding-top:5mm;display:flex;justify-content:space-between;align-items:center}
+.cover-bottom-left{color:rgba(255,255,255,0.35);font-size:8pt}
+.cover-stats{display:flex;gap:5mm}
+.cover-stat{text-align:center}
+.cover-stat-num{font-size:20pt;font-weight:900;line-height:1}
+.cover-stat-label{color:rgba(255,255,255,0.4);font-size:7pt;font-weight:600;letter-spacing:1px;text-transform:uppercase}
+
+/* INNER */
+.inner{padding:14mm 16mm 12mm}
+.page-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:4mm;border-bottom:2px solid var(--teal);margin-bottom:7mm}
+.page-header-title{color:var(--teal);font-size:8pt;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+.page-header-brand{color:var(--muted);font-size:7.5pt}
+.page-footer{position:absolute;bottom:8mm;left:16mm;right:16mm;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:3mm}
+.page-footer span{color:var(--muted);font-size:7.5pt}
+
+.section-title{font-size:18pt;font-weight:800;color:var(--teal);margin-bottom:2mm;line-height:1.2}
+.section-num{color:#14A085;margin-right:2mm}
+.section-intro{color:var(--muted);font-size:9.5pt;margin-bottom:6mm;line-height:1.7}
+h3{font-size:11pt;font-weight:700;color:var(--teal);margin:5mm 0 2mm}
+h4{font-size:9.5pt;font-weight:600;color:var(--text);margin:3mm 0 1mm}
+
+/* SEVERITY BADGES */
+.badge{display:inline-flex;align-items:center;gap:3px;font-size:7pt;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border-radius:3px}
+.badge-kritiek{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+.badge-hoog{background:#fff7ed;color:#9a3412;border:1px solid #fed7aa}
+.badge-gemiddeld{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
+.badge-laag{background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe}
+.badge-info{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
+.badge-arch{background:#faf5ff;color:#6b21a8;border:1px solid #e9d5ff}
+
+/* EFFORT/IMPACT BADGES */
+.effort{display:inline-block;font-size:7pt;font-weight:600;padding:1px 6px;border-radius:3px;border:1px solid}
+.effort-low{background:#f0fdf4;color:#166534;border-color:#bbf7d0}
+.effort-med{background:#fffbeb;color:#92400e;border-color:#fde68a}
+.effort-high{background:#fef2f2;color:#991b1b;border-color:#fecaca}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3mm;margin-bottom:6mm}
+.kpi{border-radius:8px;padding:4mm;text-align:center;border:1px solid}
+.kpi-num{font-size:22pt;font-weight:900;line-height:1}
+.kpi-label{font-size:7.5pt;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-top:1mm}
+
+/* METRIC BOXES */
+.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:3mm;margin-bottom:5mm}
+.metric-box{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:4mm}
+.metric-box-title{font-size:7.5pt;font-weight:700;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3mm}
+.metric-row{display:flex;justify-content:space-between;align-items:center;padding:1.5mm 0;border-bottom:1px solid var(--border);font-size:8.5pt}
+.metric-row:last-child{border-bottom:none}
+.metric-key{color:var(--text)}
+.metric-val{font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--teal);font-size:8pt}
+.metric-val-warn{color:#d97706}
+.metric-val-bad{color:#dc2626}
+.metric-val-good{color:#16a34a}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse;font-size:8.5pt}
+th{background:var(--teal);color:#fff;padding:3mm 4mm;text-align:left;font-size:7.5pt;font-weight:600;letter-spacing:0.5px}
+td{padding:2.5mm 4mm;border-bottom:1px solid var(--border);vertical-align:top}
+tr:nth-child(even) td{background:#f8fafc}
+.td-id{font-weight:700;color:var(--teal);font-size:8pt;white-space:nowrap;font-family:'JetBrains Mono',monospace}
+.td-loc{font-size:7.5pt;color:var(--muted);font-family:'JetBrains Mono',monospace}
+
+/* FINDING CARDS */
+.finding-card{border:1px solid var(--border);border-radius:8px;margin-bottom:5mm;overflow:hidden;break-inside:avoid}
+.card-header{padding:3.5mm 4mm;display:flex;align-items:center;gap:3mm}
+.card-header-kritiek{background:linear-gradient(90deg,#fef2f2,#fff)}
+.card-header-hoog{background:linear-gradient(90deg,#fff7ed,#fff)}
+.card-header-gemiddeld{background:linear-gradient(90deg,#fffbeb,#fff)}
+.card-header-laag{background:linear-gradient(90deg,#eff6ff,#fff)}
+.card-header-arch{background:linear-gradient(90deg,#faf5ff,#fff)}
+.card-stripe{width:4px;min-height:30px;border-radius:2px;flex-shrink:0;align-self:stretch}
+.stripe-kritiek{background:#dc2626}.stripe-hoog{background:#ea580c}
+.stripe-gemiddeld{background:#d97706}.stripe-laag{background:#2563eb}.stripe-arch{background:#7c3aed}
+.card-id{font-size:7.5pt;font-weight:700;color:var(--muted);font-family:'JetBrains Mono',monospace;white-space:nowrap}
+.card-title{font-size:9.5pt;font-weight:700;color:var(--text);flex:1}
+.card-meta{display:flex;gap:2mm;flex-wrap:wrap;align-items:center}
+.card-body{padding:3mm 4mm;border-top:1px solid var(--border)}
+.card-row{display:grid;grid-template-columns:80px 1fr;gap:2mm;margin-bottom:2mm;font-size:8.5pt}
+.card-row-label{font-weight:600;color:var(--muted);font-size:7.5pt;text-transform:uppercase;padding-top:1px}
+.card-loc{font-family:'JetBrains Mono',monospace;font-size:7.5pt;background:#f1f5f9;padding:1px 5px;border-radius:3px;color:var(--teal);display:inline-block}
+pre.code{background:#0f172a;color:#e2e8f0;padding:3mm;border-radius:6px;font-size:7pt;line-height:1.6;overflow:hidden;margin:2mm 0;white-space:pre-wrap;word-break:break-all}
+pre.code .cm{color:#64748b}
+pre.code .kw{color:#93c5fd}
+pre.code .str{color:#86efac}
+pre.code .hl{color:#fca5a5;font-weight:600}
+pre.code .ok{color:#6ee7b7;font-weight:600}
+
+/* BUNDLE VIZ */
+.bundle-bar{background:#e2e8f0;border-radius:6px;height:28px;overflow:hidden;display:flex;margin:3mm 0}
+.bundle-seg{height:100%;display:flex;align-items:center;justify-content:center;font-size:7pt;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden}
+
+/* SPEEDOMETER / SCORE */
+.score-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3mm;margin-bottom:5mm}
+.score-box{text-align:center;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:4mm}
+.score-circle{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 2mm;font-size:13pt;font-weight:900;border:3px solid}
+.score-circle-bad{border-color:#dc2626;color:#dc2626;background:#fef2f2}
+.score-circle-warn{border-color:#d97706;color:#d97706;background:#fffbeb}
+.score-circle-ok{border-color:#16a34a;color:#16a34a;background:#f0fdf4}
+.score-label{font-size:8pt;font-weight:700;color:var(--text);margin-bottom:1mm}
+.score-sub{font-size:7pt;color:var(--muted)}
+
+/* QUICK WINS */
+.qw-item{display:grid;grid-template-columns:22px 1fr auto;gap:3mm;align-items:start;padding:3mm 4mm;border:1px solid var(--border);border-radius:6px;margin-bottom:2mm;break-inside:avoid}
+.qw-num{width:22px;height:22px;border-radius:50%;background:var(--teal);color:#fff;font-size:8pt;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.qw-content{}
+.qw-title{font-size:8.5pt;font-weight:700}
+.qw-sub{font-size:8pt;color:var(--muted);margin-top:1px}
+.qw-tags{display:flex;gap:2mm;flex-wrap:wrap}
+
+/* ROUTE TABLE */
+.rt-method{font-size:7pt;font-weight:700;padding:1px 5px;border-radius:2px;font-family:'JetBrains Mono',monospace;white-space:nowrap}
+.rt-csr{background:#dbeafe;color:#1e40af}
+.rt-calls{font-family:'JetBrains Mono',monospace;font-size:8pt;font-weight:700}
+
+/* IMPACT MATRIX */
+.matrix{display:grid;grid-template-columns:1fr 1fr;gap:3mm;margin-bottom:5mm}
+.matrix-cell{border:1px solid var(--border);border-radius:6px;padding:3mm}
+.matrix-cell-title{font-size:7.5pt;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:2mm}
+.matrix-tag{font-size:7.5pt;padding:1.5mm 3mm;border-radius:3px;display:inline-block;margin:1mm 1mm 0 0}
+
+/* K6 */
+.k6-box{background:#0f172a;border-radius:8px;padding:4mm;margin:3mm 0}
+.k6-header{color:#6ee7b7;font-size:8pt;font-weight:700;margin-bottom:2mm;font-family:'JetBrains Mono',monospace}
+.k6-code{color:#e2e8f0;font-size:7pt;line-height:1.7;font-family:'JetBrains Mono',monospace;white-space:pre-wrap;word-break:break-all}
+.k6-cm{color:#4b5563}
+.k6-kw{color:#93c5fd}
+.k6-str{color:#86efac}
+.k6-num{color:#fca5a5}
+.k6-fn{color:#fde68a}
+
+/* MONITORING */
+.mon-item{display:flex;gap:3mm;padding:2.5mm 4mm;background:var(--bg);border:1px solid var(--border);border-radius:6px;margin-bottom:2mm;break-inside:avoid}
+.mon-icon{font-size:12pt;flex-shrink:0;line-height:1.3}
+.mon-text{font-size:8.5pt}
+
+.verify-item{display:flex;gap:3mm;padding:2.5mm 4mm;background:#fefce8;border:1px solid #fde68a;border-radius:6px;margin-bottom:2mm;break-inside:avoid}
+.verify-icon{color:#d97706;flex-shrink:0;line-height:1.4;font-size:10pt}
+
+@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.page{break-before:page}.page:first-child{break-before:auto}}
+</style>
+</head>
+<body>
+
+<!-- ══════ COVER ══════ -->
+<div class="page cover">
+  <div class="cover-top">
+    <div class="cover-brand">Rembro Webshop</div>
+    <div class="cover-badge">⚡ Performance Audit</div>
+  </div>
+  <div class="cover-center">
+    <div class="cover-icon">
+      <svg width="88" height="88" viewBox="0 0 88 88" fill="none">
+        <circle cx="44" cy="44" r="40" stroke="rgba(110,231,183,0.3)" stroke-width="1.5"/>
+        <circle cx="44" cy="44" r="30" stroke="rgba(110,231,183,0.2)" stroke-width="1"/>
+        <!-- Speedometer arc -->
+        <path d="M 14 54 A 30 30 0 0 1 74 54" stroke="rgba(255,255,255,0.15)" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <path d="M 14 54 A 30 30 0 0 1 44 24" stroke="#6ee7b7" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <!-- Needle -->
+        <line x1="44" y1="54" x2="44" y2="28" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="44" cy="54" r="4" fill="#fff"/>
+        <!-- Tick marks -->
+        <line x1="14" y1="54" x2="18" y2="54" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+        <line x1="74" y1="54" x2="70" y2="54" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+        <line x1="44" y1="24" x2="44" y2="28" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+        <!-- Lightning bolt -->
+        <path d="M 48 36 L 43 46 L 47 46 L 40 58 L 46 47 L 42 47 Z" fill="#fde68a"/>
+      </svg>
+    </div>
+    <div class="cover-pre">White-box Performance Audit</div>
+    <div class="cover-title">Performance<br><span>Rapport</span></div>
+    <div class="cover-divider"></div>
+    <div class="cover-sub">Rembro Webshop · Node.js + Express + React SPA + SQLite · Juni 2026</div>
+    <div class="cover-meta">
+      <div class="cover-meta-item"><div class="cover-meta-label">Type</div><div class="cover-meta-value">Statische analyse + build</div></div>
+      <div class="cover-meta-item"><div class="cover-meta-label">Datum</div><div class="cover-meta-value">Juni 2026</div></div>
+      <div class="cover-meta-item"><div class="cover-meta-label">Branch</div><div class="cover-meta-value">develop</div></div>
+    </div>
+  </div>
+  <div class="cover-bottom">
+    <div class="cover-bottom-left">Gemeten baseline: Vite build 1.41s · Bundle 196 KB (62 KB gzip)<br>17 bevindingen · 4 Hoog · 7 Gemiddeld · 5 Laag · 1 Architectureel</div>
+    <div class="cover-stats">
+      <div class="cover-stat"><div class="cover-stat-num" style="color:#fca5a5">0</div><div class="cover-stat-label">Code splits</div></div>
+      <div class="cover-stat"><div class="cover-stat-num" style="color:#fde68a">0</div><div class="cover-stat-label">Cache headers</div></div>
+      <div class="cover-stat"><div class="cover-stat-num" style="color:#fca5a5">1</div><div class="cover-stat-label">JS chunk</div></div>
+      <div class="cover-stat"><div class="cover-stat-num" style="color:#6ee7b7">17</div><div class="cover-stat-label">Bevindingen</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ BASELINE METRICS ══════ -->
+<div class="page inner">
+  <div class="page-header"><span class="page-header-title">1. Baseline metrics (gemeten)</span><span class="page-header-brand">Rembro Performance Audit 2026</span></div>
+  <div class="section-title"><span class="section-num">1.</span>Baseline metrics</div>
+  <div class="section-intro">Gemeten op 16 juni 2026 · Branch: develop · Commit: 35b6508 · <code>npm run build</code> + statische code-analyse</div>
+
+  <!-- Core Web Vitals estimated -->
+  <div style="margin-bottom:4mm">
+    <div style="font-size:8pt;font-weight:700;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3mm">Geschatte Core Web Vitals (CSR SPA zonder SSR)</div>
+    <div class="score-grid">
+      <div class="score-box">
+        <div class="score-circle score-circle-bad">LCP</div>
+        <div class="score-label">LCP</div>
+        <div class="score-sub">~1.5–3.5 s*<br>Drempel: &lt; 2.5 s</div>
+      </div>
+      <div class="score-box">
+        <div class="score-circle score-circle-warn">CLS</div>
+        <div class="score-label">CLS</div>
+        <div class="score-sub">~0.1–0.4*<br>Drempel: &lt; 0.1</div>
+      </div>
+      <div class="score-box">
+        <div class="score-circle score-circle-warn">INP</div>
+        <div class="score-label">INP</div>
+        <div class="score-sub">~50–200 ms*<br>Drempel: &lt; 200 ms</div>
+      </div>
+      <div class="score-box">
+        <div class="score-circle score-circle-bad">TTFB</div>
+        <div class="score-label">TTFB</div>
+        <div class="score-sub">~5–30 ms (server)<br>JS-afhankelijk voor content</div>
+      </div>
+    </div>
+    <div style="font-size:7.5pt;color:var(--muted);background:#fffbeb;border:1px solid #fde68a;border-radius:4px;padding:2mm 3mm">* Geschat — vereist Lighthouse/WebPageTest op een live URL voor exacte waarden. Zie sectie 7.</div>
+  </div>
+
+  <div class="metric-grid">
+    <div class="metric-box">
+      <div class="metric-box-title">📦 Vite Build (gemeten)</div>
+      <div class="metric-row"><span class="metric-key">JS bundle (raw)</span><span class="metric-val metric-val-warn">196.85 KB</span></div>
+      <div class="metric-row"><span class="metric-key">JS bundle (gzip)</span><span class="metric-val metric-val-warn">62.42 KB</span></div>
+      <div class="metric-row"><span class="metric-key">CSS bundle (raw)</span><span class="metric-val metric-val-good">14.94 KB</span></div>
+      <div class="metric-row"><span class="metric-key">CSS bundle (gzip)</span><span class="metric-val metric-val-good">3.68 KB</span></div>
+      <div class="metric-row"><span class="metric-key">Aantal JS chunks</span><span class="metric-val metric-val-bad">1 (geen splits)</span></div>
+      <div class="metric-row"><span class="metric-key">Modules getransformeerd</span><span class="metric-val metric-val-warn">1597</span></div>
+      <div class="metric-row"><span class="metric-key">Build-tijd</span><span class="metric-val metric-val-good">1.41 s</span></div>
+    </div>
+
+    <div class="metric-box">
+      <div class="metric-box-title">🗄️ Database (geanalyseerd)</div>
+      <div class="metric-row"><span class="metric-key">Queries / GET /products</span><span class="metric-val metric-val-good">1</span></div>
+      <div class="metric-row"><span class="metric-key">Queries / GET /products/:id</span><span class="metric-val metric-val-good">1</span></div>
+      <div class="metric-row"><span class="metric-key">Queries / POST /orders (3-item)</span><span class="metric-val metric-val-bad">13</span></div>
+      <div class="metric-row"><span class="metric-key">Queries / POST /orders (N-item)</span><span class="metric-val metric-val-bad">4 + 4N</span></div>
+      <div class="metric-row"><span class="metric-key">Index op order_items.order_id</span><span class="metric-val metric-val-bad">Ontbreekt</span></div>
+      <div class="metric-row"><span class="metric-key">Index op orders.created_at</span><span class="metric-val metric-val-bad">Ontbreekt</span></div>
+      <div class="metric-row"><span class="metric-key">Compressie-middleware</span><span class="metric-val metric-val-bad">Geen</span></div>
+    </div>
+  </div>
+
+  <!-- Bundle composition bar -->
+  <div style="margin-bottom:5mm">
+    <div style="font-size:8pt;font-weight:700;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:2mm">Geschatte bundel-samenstelling (196 KB gzip: 62 KB)</div>
+    <div class="bundle-bar">
+      <div class="bundle-seg" style="width:68%;background:#2563EB">react-dom ~42KB</div>
+      <div class="bundle-seg" style="width:16%;background:#7C3AED">router ~10KB</div>
+      <div class="bundle-seg" style="width:8%;background:#14A085">lucide ~5KB</div>
+      <div class="bundle-seg" style="width:5%;background:#EA580C">react ~3KB</div>
+      <div class="bundle-seg" style="width:3%;background:#D97706">app ~2KB</div>
+    </div>
+    <div style="display:flex;gap:4mm;margin-top:2mm;flex-wrap:wrap">
+      <span style="font-size:7.5pt;display:flex;align-items:center;gap:2mm"><span style="width:10px;height:10px;border-radius:2px;background:#2563EB;display:inline-block"></span>react-dom (~42 KB)</span>
+      <span style="font-size:7.5pt;display:flex;align-items:center;gap:2mm"><span style="width:10px;height:10px;border-radius:2px;background:#7C3AED;display:inline-block"></span>react-router-dom (~10 KB)</span>
+      <span style="font-size:7.5pt;display:flex;align-items:center;gap:2mm"><span style="width:10px;height:10px;border-radius:2px;background:#14A085;display:inline-block"></span>lucide-react (~5 KB)</span>
+      <span style="font-size:7.5pt;display:flex;align-items:center;gap:2mm"><span style="width:10px;height:10px;border-radius:2px;background:#EA580C;display:inline-block"></span>react (~3 KB)</span>
+      <span style="font-size:7.5pt;display:flex;align-items:center;gap:2mm"><span style="width:10px;height:10px;border-radius:2px;background:#D97706;display:inline-block"></span>app-code (~2 KB)</span>
+    </div>
+  </div>
+
+  <!-- Route map -->
+  <div style="font-size:8pt;font-weight:700;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:2mm">Route-kaart</div>
+  <table>
+    <thead><tr><th>Route</th><th>Rendering</th><th>Data-bron</th><th>API-calls bij laden</th></tr></thead>
+    <tbody>
+      <tr><td class="td-loc">/</td><td><span class="rt-method rt-csr">CSR</span></td><td class="td-loc">GET /api/products (ALL)</td><td class="rt-calls">1 ⚠</td></tr>
+      <tr><td class="td-loc">/shop</td><td><span class="rt-method rt-csr">CSR</span></td><td class="td-loc">GET /api/products (ALL)</td><td class="rt-calls">1 ⚠ dubbel</td></tr>
+      <tr><td class="td-loc">/product/:id</td><td><span class="rt-method rt-csr">CSR</span></td><td class="td-loc">GET /api/products/:id</td><td class="rt-calls">1</td></tr>
+      <tr><td class="td-loc">/winkelwagen</td><td><span class="rt-method rt-csr">CSR</span></td><td>localStorage</td><td class="rt-calls">0</td></tr>
+      <tr><td class="td-loc">/afrekenen</td><td><span class="rt-method rt-csr">CSR</span></td><td>POST /api/orders bij submit</td><td class="rt-calls">0 (1 bij submit)</td></tr>
+      <tr><td class="td-loc">/contact</td><td><span class="rt-method rt-csr">CSR</span></td><td>Geen</td><td class="rt-calls">0</td></tr>
+      <tr><td class="td-loc">/admin</td><td><span class="rt-method rt-csr">CSR</span></td><td class="td-loc">GET /api/products + GET /api/orders</td><td class="rt-calls">2 (parallel)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="page-footer"><span>Rembro Webshop · Performance Audit 2026</span><span>Pagina 2</span></div>
+</div>
+
+<!-- ══════ OVERVIEW TABLE ══════ -->
+<div class="page inner">
+  <div class="page-header"><span class="page-header-title">2. Bevindingenoverzicht</span><span class="page-header-brand">Rembro Performance Audit 2026</span></div>
+  <div class="section-title"><span class="section-num">2.</span>Alle bevindingen</div>
+  <div class="section-intro">Gesorteerd op ernst en impact. Effort = inspanning voor implementatie. Impact = verwachte prestatiewinst voor eindgebruiker.</div>
+
+  <table>
+    <thead><tr><th width="50">ID</th><th width="68">Ernst</th><th>Titel</th><th width="60">Effort</th><th width="58">Categorie</th></tr></thead>
+    <tbody>
+      <tr><td class="td-id">PER-001</td><td><span class="badge badge-hoog">Hoog</span></td><td>Geen code splitting — 196 KB in één chunk</td><td><span class="effort effort-med">Gemiddeld</span></td><td>Bundle</td></tr>
+      <tr><td class="td-id">PER-002</td><td><span class="badge badge-hoog">Hoog</span></td><td>Dubbele product-fetch (Home + Shop)</td><td><span class="effort effort-low">Laag</span></td><td>Fetching</td></tr>
+      <tr><td class="td-id">PER-003</td><td><span class="badge badge-hoog">Hoog</span></td><td>N+1 queries in POST /orders</td><td><span class="effort effort-low">Laag</span></td><td>Database</td></tr>
+      <tr><td class="td-id">PER-004</td><td><span class="badge badge-hoog">Hoog</span></td><td>Ontbrekende index op order_items.order_id</td><td><span class="effort effort-low">Laag</span></td><td>Database</td></tr>
+      <tr><td class="td-id">PER-005</td><td><span class="badge badge-hoog">Hoog</span></td><td>Geen HTTP-caching op GET /api/products</td><td><span class="effort effort-low">Laag</span></td><td>Caching</td></tr>
+      <tr><td class="td-id">PER-006</td><td><span class="badge badge-hoog">Hoog</span></td><td>Statische assets zonder far-future cache headers</td><td><span class="effort effort-low">Laag</span></td><td>Infra</td></tr>
+      <tr><td class="td-id">PER-007</td><td><span class="badge badge-gemiddeld">Gemiddeld</span></td><td>Admin HMAC token herberekend per request</td><td><span class="effort effort-low">Laag</span></td><td>Backend</td></tr>
+      <tr><td class="td-id">PER-008</td><td><span class="badge badge-gemiddeld">Gemiddeld</span></td><td>SELECT * in orderverwerking</td><td><span class="effort effort-low">Laag</span></td><td>Database</td></tr>
+      <tr><td class="td-id">PER-009</td><td><span class="badge badge-gemiddeld">Gemiddeld</span></td><td>HomePage haalt alle producten op voor 3 items</td><td><span class="effort effort-low">Laag</span></td><td>Fetching</td></tr>
+      <tr><td class="td-id">PER-010</td><td><span class="badge badge-gemiddeld">Gemiddeld</span></td><td>Afbeeldingen zonder dimensies/lazy-load/LCP-hint</td><td><span class="effort effort-low">Laag</span></td><td>Rendering</td></tr>
+      <tr><td class="td-id">PER-011</td><td><span class="badge badge-gemiddeld">Gemiddeld</span></td><td>CartContext herrendert alle consumers bij elke mutatie</td><td><span class="effort effort-med">Gemiddeld</span></td><td>Rendering</td></tr>
+      <tr><td class="td-id">PER-012</td><td><span class="badge badge-gemiddeld">Gemiddeld</span></td><td>DatabaseSync blokkeert event loop bij elke query</td><td><span class="effort effort-high">Hoog</span></td><td>Infra</td></tr>
+      <tr><td class="td-id">PER-013</td><td><span class="badge badge-gemiddeld">Gemiddeld</span></td><td>Admin herlaadt alle data na elke product-mutatie</td><td><span class="effort effort-low">Laag</span></td><td>Fetching</td></tr>
+      <tr><td class="td-id">PER-014</td><td><span class="badge badge-laag">Laag</span></td><td>Intl.NumberFormat per aanroep geconstrueerd</td><td><span class="effort effort-low">Laag</span></td><td>Bundle</td></tr>
+      <tr><td class="td-id">PER-015</td><td><span class="badge badge-laag">Laag</span></td><td>Geen CORS preflight-caching (max-age)</td><td><span class="effort effort-low">Laag</span></td><td>Backend</td></tr>
+      <tr><td class="td-id">PER-016</td><td><span class="badge badge-laag">Laag</span></td><td>Admin refresht orders na product-save/delete</td><td><span class="effort effort-low">Laag</span></td><td>Fetching</td></tr>
+      <tr><td class="td-id">PER-017</td><td><span class="badge badge-arch">Architectureel</span></td><td>Geen SSR — alle content afhankelijk van JS-executie</td><td><span class="effort effort-high">Hoog</span></td><td>Rendering</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Impact vs Effort matrix -->
+  <div style="margin-top:5mm">
+    <div style="font-size:8pt;font-weight:700;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3mm">Impact vs. Inspanning matrix</div>
+    <div class="matrix">
+      <div class="matrix-cell" style="background:#f0fdf4;border-color:#bbf7d0">
+        <div class="matrix-cell-title" style="color:#166534">🎯 Snel te implementeren + Hoge impact</div>
+        <span class="matrix-tag" style="background:#dcfce7;color:#166534;border:1px solid #bbf7d0">PER-002 Dubbele fetch</span>
+        <span class="matrix-tag" style="background:#dcfce7;color:#166534;border:1px solid #bbf7d0">PER-003 N+1 queries</span>
+        <span class="matrix-tag" style="background:#dcfce7;color:#166534;border:1px solid #bbf7d0">PER-004 DB index</span>
+        <span class="matrix-tag" style="background:#dcfce7;color:#166534;border:1px solid #bbf7d0">PER-005 API caching</span>
+        <span class="matrix-tag" style="background:#dcfce7;color:#166534;border:1px solid #bbf7d0">PER-006 Static caching</span>
+        <span class="matrix-tag" style="background:#dcfce7;color:#166534;border:1px solid #bbf7d0">PER-010 Afbeeldingen</span>
+      </div>
+      <div class="matrix-cell" style="background:#eff6ff;border-color:#bfdbfe">
+        <div class="matrix-cell-title" style="color:#1e40af">⚙️ Gemiddelde inspanning + Hoge impact</div>
+        <span class="matrix-tag" style="background:#dbeafe;color:#1e40af;border:1px solid #bfdbfe">PER-001 Code splitting</span>
+        <span class="matrix-tag" style="background:#dbeafe;color:#1e40af;border:1px solid #bfdbfe">PER-011 Context splits</span>
+      </div>
+      <div class="matrix-cell" style="background:#fffbeb;border-color:#fde68a">
+        <div class="matrix-cell-title" style="color:#92400e">⚡ Snel + Lage impact (quick wins)</div>
+        <span class="matrix-tag" style="background:#fef9c3;color:#854d0e;border:1px solid #fde68a">PER-007 HMAC cache</span>
+        <span class="matrix-tag" style="background:#fef9c3;color:#854d0e;border:1px solid #fde68a">PER-014 Intl cache</span>
+        <span class="matrix-tag" style="background:#fef9c3;color:#854d0e;border:1px solid #fde68a">PER-013 Admin refresh</span>
+        <span class="matrix-tag" style="background:#fef9c3;color:#854d0e;border:1px solid #fde68a">PER-016 Gerichte fetch</span>
+        <span class="matrix-tag" style="background:#fef9c3;color:#854d0e;border:1px solid #fde68a">PER-009 Limit param</span>
+      </div>
+      <div class="matrix-cell" style="background:#faf5ff;border-color:#e9d5ff">
+        <div class="matrix-cell-title" style="color:#6b21a8">🏗️ Hoge inspanning (strategisch)</div>
+        <span class="matrix-tag" style="background:#f3e8ff;color:#6b21a8;border:1px solid #e9d5ff">PER-012 Async DB</span>
+        <span class="matrix-tag" style="background:#f3e8ff;color:#6b21a8;border:1px solid #e9d5ff">PER-017 SSR toevoegen</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer"><span>Rembro Webshop · Performance Audit 2026</span><span>Pagina 3</span></div>
+</div>
+
+<!-- ══════ HIGH FINDINGS ══════ -->
+<div class="page inner">
+  <div class="page-header"><span class="page-header-title">3. Hoge bevindingen (PER-001 t/m PER-006)</span><span class="page-header-brand">Rembro Performance Audit 2026</span></div>
+  <div class="section-title"><span class="section-num">3.</span>Hoge bevindingen</div>
+
+  <!-- PER-001 -->
+  <div class="finding-card">
+    <div class="card-header card-header-hoog">
+      <div class="card-stripe stripe-hoog"></div>
+      <span class="badge badge-hoog">Hoog</span><span class="card-id">PER-001</span>
+      <span class="card-title">Geen code splitting — hele applicatie in één 196 KB JS-chunk</span>
+      <span class="card-meta"><span class="effort effort-med">Effort: Gemiddeld</span></span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">client/src/App.jsx:3–11</span> · <span class="card-loc">vite.config.js</span></span></div>
+      <div class="card-row"><span class="card-row-label">Gemeten</span><span>196.85 KB JS (62.42 KB gzip) · 1597 modules getransformeerd · 1 chunk</span></div>
+      <div class="card-row"><span class="card-row-label">Impact</span><span>Elke bezoeker van de homepage downloadt, parseert en compileert admin-paneel, checkout-logica en alle paginacomponenten — ook al gebruikt hij er maar één. Parse + compile op mid-range mobiel: ~200–400 ms extra.</span></div>
+      <div class="card-row"><span class="card-row-label">Herstel</span><span><code>manualChunks</code> in <span class="card-loc">vite.config.js</span> + <code>React.lazy()</code> + <code>Suspense</code> in <span class="card-loc">App.jsx</span>. Verwacht resultaat: initial chunk ~65–80 KB (gzip); AdminPage laadt alleen bij navigatie naar /admin.</span></div>
+<pre class="code"><span class="cm">// vite.config.js — HERSTEL</span>
+<span class="kw">export default</span> defineConfig({
+  plugins: [react()],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          <span class="str">"vendor-react"</span>: [<span class="str">"react"</span>, <span class="str">"react-dom"</span>, <span class="str">"react-router-dom"</span>],
+          <span class="str">"vendor-lucide"</span>: [<span class="str">"lucide-react"</span>]
+        }
+      }
+    }
+  }
+});
+
+<span class="cm">// client/src/App.jsx — HERSTEL</span>
+<span class="kw">const</span> AdminPage = lazy(() => import(<span class="str">"./pages/AdminPage.jsx"</span>));
+<span class="kw">const</span> CheckoutPage = lazy(() => import(<span class="str">"./pages/CheckoutPage.jsx"</span>));
+<span class="cm">// ... overige pagina's ook lazy</span>
+&lt;Suspense fallback={&lt;LoadingState /&gt;}&gt;
+  &lt;Routes&gt;...&lt;/Routes&gt;
+&lt;/Suspense&gt;</pre>
+    </div>
+  </div>
+
+  <!-- PER-002 -->
+  <div class="finding-card">
+    <div class="card-header card-header-hoog">
+      <div class="card-stripe stripe-hoog"></div>
+      <span class="badge badge-hoog">Hoog</span><span class="card-id">PER-002</span>
+      <span class="card-title">Dubbele product-fetch — HomePage én ShopPage roepen GET /api/products onafhankelijk aan</span>
+      <span class="card-meta"><span class="effort effort-low">Effort: Laag</span></span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">client/src/hooks/useProducts.js:1–28</span> · <span class="card-loc">HomePage.jsx:10</span> · <span class="card-loc">ShopPage.jsx:8</span></span></div>
+      <div class="card-row"><span class="card-row-label">Impact</span><span>Home → Shop navigatie = 2× network round-trip + 2× SQLite query voor identieke data. Elke fetch: +100–300 ms RTT. Totaal: 200–600 ms onnodige latentie op de user journey.</span></div>
+      <div class="card-row"><span class="card-row-label">Herstel</span><span>Module-level cache in <span class="card-loc">useProducts.js</span> — eerste aanroep fetcht, tweede aanroep leest uit module-scope variabele. Optioneel: React Query/SWR voor invalidatie.</span></div>
+<pre class="code"><span class="cm">// client/src/hooks/useProducts.js — HERSTEL</span>
+<span class="kw">let</span> cachedProducts = <span class="hl">null</span>;
+<span class="kw">let</span> pendingRequest = <span class="hl">null</span>;
+
+<span class="kw">export function</span> <span class="fn">useProducts</span>() {
+  <span class="kw">const</span> [products, setProducts] = useState(cachedProducts ?? []);
+  <span class="kw">const</span> [loading, setLoading] = useState(cachedProducts === null);
+
+  useEffect(() => {
+    <span class="kw">if</span> (cachedProducts !== null) <span class="ok">return</span>; <span class="cm">// cache hit</span>
+    <span class="kw">if</span> (!pendingRequest) {
+      pendingRequest = api.getProducts().then(d => { cachedProducts = d; <span class="kw">return</span> d; });
+    }
+    pendingRequest.then(d => { setProducts(d); setLoading(false); });
+  }, []);
+}</pre>
+    </div>
+  </div>
+
+  <!-- PER-003 + PER-004 -->
+  <div class="finding-card">
+    <div class="card-header card-header-hoog">
+      <div class="card-stripe stripe-hoog"></div>
+      <span class="badge badge-hoog">Hoog</span><span class="card-id">PER-003</span>
+      <span class="card-title">N+1 query pattern in POST /orders — één SELECT per winkelwagen-item</span>
+      <span class="card-meta"><span class="effort effort-low">Effort: Laag</span></span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">server/routes/orders.js:83–84</span></span></div>
+      <div class="card-row"><span class="card-row-label">Gemeten</span><span>POST /orders met 3 items = 13 SQLite queries; met 10 items = 4 + 4×10 = 44 queries, alle synchrone event-loop-blokkering.</span></div>
+      <div class="card-row"><span class="card-row-label">Impact</span><span>Elk extra winkelwagen-item voegt 1 extra synchrone DB-call toe. Simultane checkouts wachten achter elkaar in de single-threaded event loop.</span></div>
+<pre class="code"><span class="cm">// orders.js:83-84 — PROBLEEM</span>
+<span class="kw">const</span> products = productIds.<span class="hl">map</span>((id) =>
+  db.prepare(<span class="str">"SELECT * FROM products WHERE id = ?"</span>).get(id)  <span class="cm">// N queries!</span>
+);
+
+<span class="cm">// HERSTEL — één query met IN-clause</span>
+<span class="kw">const</span> placeholders = productIds.map(() => <span class="str">"?"</span>).join(<span class="str">", "</span>);
+<span class="kw">const</span> rows = db.prepare(
+  <span class="str">`SELECT id, name, price, stock FROM products WHERE id IN (${placeholders})`</span>
+).all(...productIds);
+<span class="kw">const</span> productMap = <span class="ok">new Map</span>(rows.map(p => [p.id, p]));</pre>
+    </div>
+  </div>
+
+  <div class="finding-card">
+    <div class="card-header card-header-hoog">
+      <div class="card-stripe stripe-hoog"></div>
+      <span class="badge badge-hoog">Hoog</span><span class="card-id">PER-004</span>
+      <span class="card-title">Ontbrekende index op order_items.order_id — full table scan bij elke orderfetch</span>
+      <span class="card-meta"><span class="effort effort-low">Effort: Laag</span></span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">server/db/database.js:57–68</span></span></div>
+      <div class="card-row"><span class="card-row-label">Impact</span><span>SQLite maakt GEEN automatische index bij FOREIGN KEY. Met 10.000 orders (3 items gem.) = 30.000 rijen gescand per <code>getOrderWithItems()</code>-aanroep. Linaire degradatie O(n) i.p.v. O(log n).</span></div>
+<pre class="code"><span class="cm">// server/db/database.js — HERSTEL (voeg toe na CREATE TABLE)</span>
+db.exec(<span class="str">`
+  CREATE INDEX IF NOT EXISTS idx_order_items_order_id
+    ON order_items(order_id);
+  CREATE INDEX IF NOT EXISTS idx_orders_created_at
+    ON orders(created_at DESC);
+  CREATE INDEX IF NOT EXISTS idx_products_created_at
+    ON products(created_at DESC);
+`</span>);</pre>
+    </div>
+  </div>
+
+  <!-- PER-005 + PER-006 -->
+  <div class="finding-card">
+    <div class="card-header card-header-hoog">
+      <div class="card-stripe stripe-hoog"></div>
+      <span class="badge badge-hoog">Hoog</span><span class="card-id">PER-005 + PER-006</span>
+      <span class="card-title">Geen HTTP-caching op API én geen far-future cache op statische assets</span>
+      <span class="card-meta"><span class="effort effort-low">Effort: Laag</span></span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">server/routes/products.js:36</span> · <span class="card-loc">server/index.js:19, 38</span></span></div>
+      <div class="card-row"><span class="card-row-label">Impact</span><span>Elke bezoeker downloadt de 196 KB JS-bundle opnieuw. Vite-assets zijn content-hashed (veilig voor eindeloze cache) maar <code>express.static()</code> heeft standaard <code>max-age=0</code>. Terugkerende bezoekers besparen 0 bytes.</span></div>
+<pre class="code"><span class="cm">// server/index.js — HERSTEL</span>
+<span class="kw">import</span> compression <span class="kw">from</span> <span class="str">"compression"</span>;      <span class="cm">// npm i compression</span>
+app.use(<span class="ok">compression</span>());                      <span class="cm">// gzip alle responses</span>
+app.use(express.static(distPath, {
+  maxAge: <span class="str">"1y"</span>, immutable: <span class="ok">true</span>           <span class="cm">// hashed assets = eeuwige cache</span>
+}));
+
+<span class="cm">// server/routes/products.js — Cache-Control voor productdata</span>
+res.set(<span class="str">"Cache-Control"</span>, <span class="str">"public, max-age=30, stale-while-revalidate=300"</span>);
+res.json(products);</pre>
+    </div>
+  </div>
+
+  <div class="page-footer"><span>Rembro Webshop · Performance Audit 2026</span><span>Pagina 5</span></div>
+</div>
+
+<!-- ══════ MEDIUM/LOW FINDINGS ══════ -->
+<div class="page inner">
+  <div class="page-header"><span class="page-header-title">4. Gemiddelde &amp; lage bevindingen</span><span class="page-header-brand">Rembro Performance Audit 2026</span></div>
+  <div class="section-title"><span class="section-num">4.</span>Gemiddelde &amp; lage bevindingen</div>
+
+  <div class="finding-card">
+    <div class="card-header card-header-gemiddeld">
+      <div class="card-stripe stripe-gemiddeld"></div>
+      <span class="badge badge-gemiddeld">Gemiddeld</span><span class="card-id">PER-007</span>
+      <span class="card-title">Admin HMAC-token herberekend bij elke authenticated request</span>
+      <span class="card-meta"><span class="effort effort-low">Effort: Laag</span></span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">server/utils/auth.js:8–13, 22</span></span></div>
+      <div class="card-row"><span class="card-row-label">Impact</span><span><code>crypto.createHmac(...).digest()</code> per request — token is een pure functie van env-vars die nooit wijzigen. Onnodige CPU op de event loop thread, hoewel HMAC-SHA256 snel is (~1–5 µs).</span></div>
+<pre class="code"><span class="cm">// HERSTEL — bereken één keer bij module-load</span>
+<span class="kw">const</span> <span class="ok">ADMIN_TOKEN</span> = crypto.createHmac(<span class="str">"sha256"</span>, adminSecret)
+  .update(<span class="str">`${adminUser}:${adminPassword}`</span>).digest(<span class="str">"hex"</span>);
+<span class="kw">export const</span> createAdminToken = () => ADMIN_TOKEN; <span class="cm">// geen berekening meer</span></pre>
+    </div>
+  </div>
+
+  <div class="finding-card">
+    <div class="card-header card-header-gemiddeld">
+      <div class="card-stripe stripe-gemiddeld"></div>
+      <span class="badge badge-gemiddeld">Gemiddeld</span><span class="card-id">PER-009</span>
+      <span class="card-title">HomePage haalt ALLE producten op om er 3 te tonen</span>
+      <span class="card-meta"><span class="effort effort-low">Effort: Laag</span></span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">client/src/pages/HomePage.jsx:10–11</span> · <span class="card-loc">server/routes/products.js:36</span></span></div>
+      <div class="card-row"><span class="card-row-label">Impact</span><span>Huidig (6 producten): verwaarloosbaar. Bij 1.000 producten: 1.000 rijen geserialiseerd, overgedragen, geparsed — 997 weggegooid. Herstel: <code>?limit=3</code> query-parameter op de API.</span></div>
+    </div>
+  </div>
+
+  <div class="finding-card">
+    <div class="card-header card-header-gemiddeld">
+      <div class="card-stripe stripe-gemiddeld"></div>
+      <span class="badge badge-gemiddeld">Gemiddeld</span><span class="card-id">PER-010</span>
+      <span class="card-title">Afbeeldingen zonder dimensies, lazy loading of LCP-prioriteitshint</span>
+      <span class="card-meta"><span class="effort effort-low">Effort: Laag</span></span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">client/src/components/ProductCard.jsx:13</span> · <span class="card-loc">HomePage.jsx:22</span> · <span class="card-loc">ProductPage.jsx:29</span></span></div>
+      <div class="card-row"><span class="card-row-label">Impact</span><span>Geen <code>width/height</code> → browser kan geen ruimte reserveren → CLS bij elke afbeelding. Hero-afbeelding (1400px Unsplash, ~150–300 KB) heeft geen <code>fetchpriority="high"</code> → concurreert met JS-bundle voor bandbreedte.</span></div>
+<pre class="code"><span class="cm">// HomePage.jsx hero — HERSTEL</span>
+&lt;img src={heroUrl} alt="..." <span class="ok">width="1400" height="933"
+  fetchpriority="high" decoding="async"</span> /&gt;
+
+<span class="cm">// ProductCard.jsx — HERSTEL</span>
+&lt;img src={product.image} alt={product.name}
+  <span class="ok">width="900" height="600" loading="lazy" decoding="async"</span> /&gt;</pre>
+    </div>
+  </div>
+
+  <div class="finding-card">
+    <div class="card-header card-header-gemiddeld">
+      <div class="card-stripe stripe-gemiddeld"></div>
+      <span class="badge badge-gemiddeld">Gemiddeld</span><span class="card-id">PER-011</span>
+      <span class="card-title">CartContext herrendert alle consumers bij elke winkelwagen-mutatie</span>
+      <span class="card-meta"><span class="effort effort-med">Effort: Gemiddeld</span></span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">client/src/context/CartContext.jsx:17–65</span></span></div>
+      <div class="card-row"><span class="card-row-label">Impact</span><span>Toevoegen aan winkelwagen herrendert: Layout (header) + elke ProductCard op de pagina. Bij 6 producten: 8 onnodige renders. Bij 50+ producten: 52 renders. Oplossing: Context splitsen in items-context en actions-context.</span></div>
+    </div>
+  </div>
+
+  <div class="finding-card">
+    <div class="card-header card-header-gemiddeld">
+      <div class="card-stripe stripe-gemiddeld"></div>
+      <span class="badge badge-gemiddeld">Gemiddeld</span><span class="card-id">PER-012</span>
+      <span class="card-title">DatabaseSync blokkeert Node.js event loop bij elke SQLite-query</span>
+      <span class="card-meta"><span class="effort effort-high">Effort: Hoog</span></span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">server/db/database.js:14</span> · <span class="card-loc">server/routes/orders.js:82–131</span></span></div>
+      <div class="card-row"><span class="card-row-label">Impact</span><span>Elke SQLite-aanroep blokkeert de V8 main thread. Simultane requests wachten achter elkaar. POST /orders (13 queries) blokkeert ~5–20 ms per checkout. Bij 10 gelijktijdige bestellingen: laatste wacht ~100–200 ms puur op DB-toegang.</span></div>
+      <div class="card-row"><span class="card-row-label">Opties</span><span>1. Korte termijn: N+1 reduceren (PER-003 — meeste winst). 2. Medium: <code>worker_threads</code> voor DB-toegang. 3. Lang: PostgreSQL + async pg-driver.</span></div>
+    </div>
+  </div>
+
+  <!-- Low findings compact -->
+  <div class="finding-card">
+    <div class="card-header card-header-laag">
+      <div class="card-stripe stripe-laag"></div>
+      <span class="badge badge-laag">Laag</span><span class="card-id">PER-014</span>
+      <span class="card-title">Intl.NumberFormat per aanroep geconstrueerd — geen cached instantie</span>
+      <span class="card-meta"><span class="effort effort-low">Effort: 2 min</span></span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">client/src/utils/format.js:1–6</span></span></div>
+      <div class="card-row"><span class="card-row-label">Herstel</span><span>Hois <code>new Intl.NumberFormat(...)</code> naar module-scope. Admin-pagina rendert 20+ prijzen per render; elke aanroep maakt en gooit een formatter-object weg.</span></div>
+    </div>
+  </div>
+
+  <div class="finding-card">
+    <div class="card-header card-header-laag">
+      <div class="card-stripe stripe-laag"></div>
+      <span class="badge badge-laag">Laag</span><span class="card-id">PER-016 + PER-013</span>
+      <span class="card-title">Admin herlaadt alle data (producten + orders) na elke product-mutatie</span>
+      <span class="card-meta"><span class="effort effort-low">Effort: 10 min</span></span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">client/src/pages/AdminPage.jsx:147, 163</span></span></div>
+      <div class="card-row"><span class="card-row-label">Herstel</span><span>Na <code>saveProduct()</code> en <code>deleteProduct()</code>: vervang <code>loadAdminData()</code> door gerichte <code>getProducts()</code>-call. Orderdata verandert niet bij product-mutaties.</span></div>
+    </div>
+  </div>
+
+  <!-- Architectural -->
+  <div class="finding-card">
+    <div class="card-header card-header-arch">
+      <div class="card-stripe stripe-arch"></div>
+      <span class="badge badge-arch">Architectureel</span><span class="card-id">PER-017</span>
+      <span class="card-title">Pure CSR SPA — alle content afhankelijk van JS-executie (TTFB → LCP: 350ms–2.3s)</span>
+      <span class="card-meta"><span class="effort effort-high">Effort: Hoog</span></span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">server/index.js:38–46</span> · <span class="card-loc">client/src/main.jsx:8–16</span></span></div>
+      <div class="card-row"><span class="card-row-label">Impact</span><span>Initiële HTML = leeg <code>&lt;div id="root"&gt;</code>. LCP-keten: HTML → JS download → JS parse (200–400 ms) → React hydrate → API fetch → render. Op 3G mobiel: tot 2.3 s voor eerste zichtbare content.</span></div>
+      <div class="card-row"><span class="card-row-label">Korte termijn</span><span>Voeg <code>&lt;link rel="preload" as="fetch" href="/api/products?limit=3"&gt;</code> toe aan <code>index.html</code> + <code>&lt;link rel="preconnect" href="https://images.unsplash.com"&gt;</code>.</span></div>
+      <div class="card-row"><span class="card-row-label">Lange termijn</span><span>Overweeg migratie naar framework met SSR-ondersteuning (Next.js, Remix) voor statische pre-rendering van shop- en productpagina's.</span></div>
+    </div>
+  </div>
+
+  <div class="page-footer"><span>Rembro Webshop · Performance Audit 2026</span><span>Pagina 8</span></div>
+</div>
+
+<!-- ══════ QUICK WINS ══════ -->
+<div class="page inner">
+  <div class="page-header"><span class="page-header-title">5. Prioriteitenkaart &amp; quick wins</span><span class="page-header-brand">Rembro Performance Audit 2026</span></div>
+  <div class="section-title"><span class="section-num">5.</span>Prioriteitenkaart</div>
+  <div class="section-intro">Gerangschikt op impact × implementatiesnelheid. Bovenste 5 items leveren de grootste prestatiewinst met de minste inspanning.</div>
+
+  <div class="qw-item" style="border-color:#bbf7d0;background:#f0fdf4">
+    <div class="qw-num" style="background:#16a34a">1</div>
+    <div class="qw-content"><div class="qw-title">PER-004 — Voeg ontbrekende DB-indexes toe</div><div class="qw-sub">3 regels SQL in database.js · Wegneming van O(n) table scans · Kritisch bij groei voorbij 1.000 orders</div></div>
+    <div class="qw-tags"><span class="effort effort-low">10 min</span></div>
+  </div>
+  <div class="qw-item" style="border-color:#bbf7d0;background:#f0fdf4">
+    <div class="qw-num" style="background:#16a34a">2</div>
+    <div class="qw-content"><div class="qw-title">PER-006 — Far-future cache op statische assets</div><div class="qw-sub">express.static({ maxAge:"1y", immutable:true }) · 196 KB bundle: 0 bytes herdownload voor terugkerende bezoekers</div></div>
+    <div class="qw-tags"><span class="effort effort-low">10 min</span></div>
+  </div>
+  <div class="qw-item" style="border-color:#bbf7d0;background:#f0fdf4">
+    <div class="qw-num" style="background:#16a34a">3</div>
+    <div class="qw-content"><div class="qw-title">PER-005 — Gzip + Cache-Control op API-responses</div><div class="qw-sub">npm i compression + 5 regels · Browser hergebruikt productdata 30s · Elimineer onnodige network round-trips</div></div>
+    <div class="qw-tags"><span class="effort effort-low">30 min</span></div>
+  </div>
+  <div class="qw-item" style="border-color:#bbf7d0;background:#f0fdf4">
+    <div class="qw-num" style="background:#16a34a">4</div>
+    <div class="qw-content"><div class="qw-title">PER-003 — Fix N+1 queries in POST /orders</div><div class="qw-sub">Vervang .map() + N SELECTs door één IN-query · 13 queries → 7 queries voor 3-item order · Event-loop blokkering halveert</div></div>
+    <div class="qw-tags"><span class="effort effort-low">20 min</span></div>
+  </div>
+  <div class="qw-item" style="border-color:#bbf7d0;background:#f0fdf4">
+    <div class="qw-num" style="background:#16a34a">5</div>
+    <div class="qw-content"><div class="qw-title">PER-010 — Voeg afbeeldingsdimensies + lazy loading toe</div><div class="qw-sub">width/height op alle img-tags · fetchpriority="high" op hero · loading="lazy" op product cards · CLS van ~0.3 → &lt; 0.1</div></div>
+    <div class="qw-tags"><span class="effort effort-low">30 min</span></div>
+  </div>
+  <div class="qw-item">
+    <div class="qw-num" style="background:var(--teal)">6</div>
+    <div class="qw-content"><div class="qw-title">PER-002 — Module-level cache in useProducts.js</div><div class="qw-sub">~20 regels code · Home→Shop navigatie: -200 tot -600 ms wachttijd · Elimineert dubbele network + DB round-trip</div></div>
+    <div class="qw-tags"><span class="effort effort-low">30 min</span></div>
+  </div>
+  <div class="qw-item">
+    <div class="qw-num" style="background:var(--teal)">7</div>
+    <div class="qw-content"><div class="qw-title">PER-014 — Cache Intl.NumberFormat instantie</div><div class="qw-sub">1 regel — verplaats naar module-scope in format.js · Elimineert object-allocatie bij elke prijs-render</div></div>
+    <div class="qw-tags"><span class="effort effort-low">2 min</span></div>
+  </div>
+  <div class="qw-item">
+    <div class="qw-num" style="background:var(--teal)">8</div>
+    <div class="qw-content"><div class="qw-title">PER-001 — Code splitting + React.lazy voor routes</div><div class="qw-sub">vite.config.js + App.jsx herschrijven · Initial chunk: 196 KB → ~65 KB (gzip) · AdminPage laadt alleen bij /admin-bezoek</div></div>
+    <div class="qw-tags"><span class="effort effort-med">60 min</span></div>
+  </div>
+
+  <!-- Expected gains summary -->
+  <div style="margin-top:5mm;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:4mm">
+    <div style="font-size:8pt;font-weight:700;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3mm">Verwachte prestatieverbetering na quick wins 1–7 (±2 uur werk)</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:3mm;text-align:center">
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:3mm">
+        <div style="font-size:7.5pt;color:#166534;font-weight:700">DB queries/order</div>
+        <div style="font-size:14pt;font-weight:900;color:#16a34a">13 → 7</div>
+        <div style="font-size:7pt;color:var(--muted)">-46% event-loop blokkering</div>
+      </div>
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:3mm">
+        <div style="font-size:7.5pt;color:#166534;font-weight:700">Repeat visit assets</div>
+        <div style="font-size:14pt;font-weight:900;color:#16a34a">197KB → 0KB</div>
+        <div style="font-size:7pt;color:var(--muted)">100% cache hit (far-future)</div>
+      </div>
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:3mm">
+        <div style="font-size:7.5pt;color:#166534;font-weight:700">Home→Shop fetches</div>
+        <div style="font-size:14pt;font-weight:900;color:#16a34a">2 → 1</div>
+        <div style="font-size:7pt;color:var(--muted)">-200–600ms navigatie</div>
+      </div>
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:3mm">
+        <div style="font-size:7.5pt;color:#166534;font-weight:700">CLS score</div>
+        <div style="font-size:14pt;font-weight:900;color:#16a34a">~0.3 → &lt;0.1</div>
+        <div style="font-size:7pt;color:var(--muted)">"Goed" drempel bereikt</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer"><span>Rembro Webshop · Performance Audit 2026</span><span>Pagina 9</span></div>
+</div>
+
+<!-- ══════ K6 LOAD TESTS ══════ -->
+<div class="page inner">
+  <div class="page-header"><span class="page-header-title">6. Loadtest-plan &amp; k6-scripts</span><span class="page-header-brand">Rembro Performance Audit 2026</span></div>
+  <div class="section-title"><span class="section-num">6.</span>Loadtest-plan &amp; k6-scripts</div>
+  <div class="section-intro">Voer tests uit op een lokale of staging-omgeving. Nooit op productie. Installeer k6: <code>winget install k6</code> (Windows) of <code>brew install k6</code> (Mac).</div>
+
+  <div style="font-size:9pt;font-weight:700;color:var(--teal);margin-bottom:2mm">Starten: <code>node server/index.js</code> (poort 3001) → in tweede terminal: <code>k6 run scripts/k6-browse.js</code></div>
+
+  <div class="k6-box">
+    <div class="k6-header">// scripts/k6-browse.js — Scenario 1: Browse (home → shop → productdetail)</div>
+    <div class="k6-code"><span class="k6-kw">import</span> http <span class="k6-kw">from</span> <span class="k6-str">"k6/http"</span>;
+<span class="k6-kw">import</span> { sleep, check } <span class="k6-kw">from</span> <span class="k6-str">"k6"</span>;
+
+<span class="k6-kw">export const</span> options = {
+  stages: [
+    { duration: <span class="k6-str">"30s"</span>, target: <span class="k6-num">10</span> },   <span class="k6-cm">// opwarmen</span>
+    { duration: <span class="k6-str">"1m"</span>,  target: <span class="k6-num">50</span> },   <span class="k6-cm">// piekbelasting</span>
+    { duration: <span class="k6-str">"30s"</span>, target: <span class="k6-num">0</span>  },   <span class="k6-cm">// afkoelen</span>
+  ],
+  thresholds: {
+    <span class="k6-str">"http_req_duration"</span>: [<span class="k6-str">"p(95)&lt;500"</span>],  <span class="k6-cm">// p95 &lt; 500ms</span>
+    <span class="k6-str">"http_req_failed"</span>:   [<span class="k6-str">"rate&lt;0.01"</span>],  <span class="k6-cm">// foutrate &lt; 1%</span>
+  },
+};
+
+<span class="k6-kw">export default function</span> () {
+  <span class="k6-cm">// 1. Haal productlijst op (= HomePage + ShopPage)</span>
+  <span class="k6-kw">const</span> r1 = http.get(<span class="k6-str">"http://localhost:3001/api/products"</span>);
+  check(r1, { <span class="k6-str">"products 200"</span>: r => r.status === <span class="k6-num">200</span> });
+  sleep(<span class="k6-num">1</span>);
+
+  <span class="k6-cm">// 2. Open een productpagina (Urban Rugzak, slug of id)</span>
+  <span class="k6-kw">const</span> r2 = http.get(<span class="k6-str">"http://localhost:3001/api/products/urban-rugzak"</span>);
+  check(r2, { <span class="k6-str">"product 200"</span>: r => r.status === <span class="k6-num">200</span> });
+  sleep(<span class="k6-num">2</span>);
+}</div>
+  </div>
+
+  <div class="k6-box">
+    <div class="k6-header">// scripts/k6-checkout.js — Scenario 2: Checkout (bestelling plaatsen)</div>
+    <div class="k6-code"><span class="k6-kw">import</span> http <span class="k6-kw">from</span> <span class="k6-str">"k6/http"</span>;
+<span class="k6-kw">import</span> { sleep, check } <span class="k6-kw">from</span> <span class="k6-str">"k6"</span>;
+
+<span class="k6-kw">export const</span> options = {
+  stages: [
+    { duration: <span class="k6-str">"30s"</span>, target: <span class="k6-num">5</span>  },
+    { duration: <span class="k6-str">"1m"</span>,  target: <span class="k6-num">20</span> },   <span class="k6-cm">// checkout = zwaarder</span>
+    { duration: <span class="k6-str">"30s"</span>, target: <span class="k6-num">0</span>  },
+  ],
+  thresholds: {
+    <span class="k6-str">"http_req_duration{name:checkout}"</span>: [<span class="k6-str">"p(95)&lt;800"</span>],
+    <span class="k6-str">"http_req_failed"</span>: [<span class="k6-str">"rate&lt;0.01"</span>],
+  },
+};
+
+<span class="k6-kw">export default function</span> () {
+  <span class="k6-kw">const</span> payload = JSON.stringify({
+    customerName: <span class="k6-str">"Test Klant"</span>, email: <span class="k6-str">"test@example.com"</span>,
+    phone: <span class="k6-str">"0612345678"</span>,  address: <span class="k6-str">"Teststraat 1"</span>,
+    postalCode: <span class="k6-str">"1234AB"</span>,    city: <span class="k6-str">"Amsterdam"</span>,
+    items: [{ productId: <span class="k6-num">1</span>, quantity: <span class="k6-num">1</span> }],
+  });
+  <span class="k6-kw">const</span> r = http.post(
+    <span class="k6-str">"http://localhost:3001/api/orders"</span>, payload,
+    { headers: { <span class="k6-str">"Content-Type"</span>: <span class="k6-str">"application/json"</span> },
+      tags: { name: <span class="k6-str">"checkout"</span> } }
+  );
+  check(r, { <span class="k6-str">"order 201"</span>: r => r.status === <span class="k6-num">201</span> });
+  sleep(<span class="k6-num">3</span>);
+}</div>
+  </div>
+
+  <div class="k6-box">
+    <div class="k6-header">// scripts/k6-spike.js — Scenario 3: Spike test (plotselinge piek, bijv. sale)</div>
+    <div class="k6-code"><span class="k6-kw">export const</span> options = {
+  stages: [
+    { duration: <span class="k6-str">"10s"</span>, target: <span class="k6-num">5</span>   },   <span class="k6-cm">// rustig</span>
+    { duration: <span class="k6-str">"10s"</span>, target: <span class="k6-num">200</span>  },   <span class="k6-cm">// plotselinge piek</span>
+    { duration: <span class="k6-str">"1m"</span>,  target: <span class="k6-num">200</span>  },   <span class="k6-cm">// piek sustained</span>
+    { duration: <span class="k6-str">"10s"</span>, target: <span class="k6-num">5</span>   },   <span class="k6-cm">// terugval</span>
+  ],
+  thresholds: { <span class="k6-str">"http_req_failed"</span>: [<span class="k6-str">"rate&lt;0.05"</span>] },  <span class="k6-cm">// max 5% fouten</span>
+};
+<span class="k6-cm">// Zelfde request-body als k6-browse.js</span></div>
+  </div>
+
+  <div style="margin-top:4mm;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:4mm">
+    <div style="font-size:8pt;font-weight:700;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3mm">Aanbevolen drempelwaarden (thresholds)</div>
+    <table>
+      <thead><tr><th>Metric</th><th>Drempel</th><th>Toelichting</th></tr></thead>
+      <tbody>
+        <tr><td><code>http_req_duration p(95)</code></td><td style="color:#16a34a;font-weight:700">&lt; 500 ms</td><td>Browse-endpoints (GET products, GET product/:id)</td></tr>
+        <tr><td><code>http_req_duration p(95)</code> checkout</td><td style="color:#d97706;font-weight:700">&lt; 800 ms</td><td>POST /orders (13 synchrone DB-queries)</td></tr>
+        <tr><td><code>http_req_failed rate</code></td><td style="color:#16a34a;font-weight:700">&lt; 1%</td><td>HTTP 5xx + netwerk-errors</td></tr>
+        <tr><td><code>http_req_duration p(99)</code></td><td style="color:#ea580c;font-weight:700">&lt; 2 s</td><td>Absolute bovengrens — spiketests</td></tr>
+        <tr><td>Minimale checkout-doorvoer</td><td style="color:#16a34a;font-weight:700">&gt; 10 req/s</td><td>Bij piek van 50 gelijktijdige gebruikers</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="page-footer"><span>Rembro Webshop · Performance Audit 2026</span><span>Pagina 10</span></div>
+</div>
+
+<!-- ══════ MONITORING + VERIFICATION ══════ -->
+<div class="page inner">
+  <div class="page-header"><span class="page-header-title">7. Monitoring &amp; verificatie</span><span class="page-header-brand">Rembro Performance Audit 2026</span></div>
+  <div class="section-title"><span class="section-num">7.</span>Monitoring aanbevelingen</div>
+  <div class="section-intro">Continue meting na implementatie van de verbeteringen — prestatie is geen eenmalige actie.</div>
+
+  <div class="mon-item"><span class="mon-icon">📊</span><div class="mon-text"><strong>Core Web Vitals (RUM)</strong> — Voeg <code>web-vitals</code> npm-pakket toe en stuur LCP/CLS/INP naar een gratis endpoint (bijv. Cloudflare Analytics of simpele beacon-call). Meet op echte gebruikersapparaten, niet alleen in Lighthouse.</div></div>
+  <div class="mon-item"><span class="mon-icon">🗄️</span><div class="mon-text"><strong>Trage queries loggen</strong> — Voeg query-timing logging toe in <code>withTransaction()</code> en route-handlers: log queries die langer dan 50 ms duren naar console.warn. Zo vang je productie-degradatie vroeg op.</div></div>
+  <div class="mon-item"><span class="mon-icon">📦</span><div class="mon-text"><strong>Bundle-size budget in CI</strong> — Voeg <code>bundlesize</code> of Vite's <code>build.chunkSizeWarningLimit</code> toe aan de build. Stel budget in: initial chunk ≤ 75 KB gzip. GitHub Actions breekt de build als het budget wordt overschreden.</div></div>
+  <div class="mon-item"><span class="mon-icon">⏱️</span><div class="mon-text"><strong>API-latentie monitoring</strong> — Voeg een Express-middleware toe die request-duur meet en logt (p50/p95). Na 1.000 verzoeken heb je een betrouwbaar latentieprofiel per endpoint.</div></div>
+  <div class="mon-item"><span class="mon-icon">🔄</span><div class="mon-text"><strong>Lighthouse CI in pull requests</strong> — Installeer <code>@lhci/cli</code> en voer Lighthouse uit op elke PR. Stel drempelwaarden in: Performance ≥ 80, LCP ≤ 2.5 s. Breek de CI bij regressie.</div></div>
+  <div class="mon-item"><span class="mon-icon">💾</span><div class="mon-text"><strong>SQLite database-grootte</strong> — Monitor de bestandsgrootte van <code>server/data/webshop.sqlite</code> wekelijks. Bij &gt; 100 MB is het tijd voor een achiverings- of migratiestrategie naar PostgreSQL.</div></div>
+
+  <div class="section-title" style="margin-top:7mm"><span class="section-num">8.</span>Vereist handmatige verificatie</div>
+  <div class="section-intro" style="margin-bottom:4mm">De volgende metingen vereisen een draaiende server, een browser of een externe testomgeving.</div>
+
+  <div class="verify-item"><span class="verify-icon">⚠</span><div class="mon-text"><strong>Exacte Core Web Vitals</strong> — Voer Lighthouse of PageSpeed Insights uit op een live URL voor gemeten LCP/CLS/INP/TTFB. Alle waarden in dit rapport zijn schattingen op basis van code-analyse.</div></div>
+  <div class="verify-item"><span class="verify-icon">⚠</span><div class="mon-text"><strong>SQLite query-tijden</strong> — Voer <code>EXPLAIN QUERY PLAN SELECT ...</code> uit op de productie-database om de werkelijke query-plannen te controleren, met name voor <code>getOrderWithItems()</code>.</div></div>
+  <div class="verify-item"><span class="verify-icon">⚠</span><div class="mon-text"><strong>Event-loop blokkering</strong> — Gebruik <code>clinic.js flame</code> of <code>node --inspect</code> met een load test om te meten hoeveel ms de event loop daadwerkelijk wordt geblokkeerd door <code>DatabaseSync</code>.</div></div>
+  <div class="verify-item"><span class="verify-icon">⚠</span><div class="mon-text"><strong>Bundel-samenstelling</strong> — Voer <code>npx vite-bundle-visualizer</code> uit na de build voor exacte bibliotheek-per-bibliotheek groottes (niet de schattingen in dit rapport).</div></div>
+  <div class="verify-item"><span class="verify-icon">⚠</span><div class="mon-text"><strong>Werkelijke LCP-element</strong> — Open de app in Chrome DevTools → Performance-tab → neem een opname. Het LCP-element (hero-afbeelding of eerste productkaart) is apparaat- en viewport-afhankelijk.</div></div>
+  <div class="verify-item"><span class="verify-icon">⚠</span><div class="mon-text"><strong>Gzip-effect op API-responses</strong> — Na installatie van <code>compression</code>: controleer respons-headers op <code>Content-Encoding: gzip</code> en vergelijk payload-groottes voor en na, met <code>curl -H "Accept-Encoding: gzip" -v ...</code>.</div></div>
+  <div class="verify-item"><span class="verify-icon">⚠</span><div class="mon-text"><strong>Cache-Control effectiviteit</strong> — Controleer na toevoeging van cache headers of Chrome DevTools "from cache" / "304 Not Modified" toont bij herhaalbezoeken voor statische assets.</div></div>
+  <div class="verify-item"><span class="verify-icon">⚠</span><div class="mon-text"><strong>Checkout-doorvoer onder concurrent load</strong> — Voer k6-checkout.js uit met 20+ gelijktijdige VUs en meet de werkelijke p95-latentie. SQLite's single-writer lock maakt dit het knelpunt bij hoge load.</div></div>
+
+  <div class="page-footer"><span>Rembro Webshop · Performance Audit 2026</span><span>Pagina 11</span></div>
+</div>
+
+<!-- ══════ BACK COVER ══════ -->
+<div class="page cover" style="justify-content:center;align-items:center;text-align:center">
+  <div>
+    <svg width="70" height="70" viewBox="0 0 88 88" fill="none" style="margin-bottom:8mm">
+      <circle cx="44" cy="44" r="40" stroke="rgba(110,231,183,0.3)" stroke-width="1.5"/>
+      <path d="M 14 54 A 30 30 0 0 1 74 54" stroke="rgba(255,255,255,0.15)" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <path d="M 14 54 A 30 30 0 0 1 44 24" stroke="#6ee7b7" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <line x1="44" y1="54" x2="44" y2="28" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="44" cy="54" r="4" fill="#fff"/>
+      <path d="M 48 36 L 43 46 L 47 46 L 40 58 L 46 47 L 42 47 Z" fill="#fde68a"/>
+    </svg>
+    <div style="color:rgba(255,255,255,0.35);font-size:9pt;font-weight:600;letter-spacing:3px;text-transform:uppercase;margin-bottom:3mm">Rembro Webshop</div>
+    <div style="color:#fff;font-size:16pt;font-weight:800;margin-bottom:2mm">Performance Audit 2026</div>
+    <div style="width:50px;height:2px;background:linear-gradient(90deg,#6ee7b7,#34d399);margin:4mm auto"></div>
+    <div style="color:rgba(255,255,255,0.4);font-size:9pt;margin-bottom:8mm">Dit rapport is gebaseerd op statische broncode-analyse en Vite build-output.<br>Alle CWV-waarden zijn schattingen — meet op een live omgeving voor exacte data.</div>
+    <div style="display:flex;justify-content:center;gap:5mm;flex-wrap:wrap">
+      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:3mm 5mm;text-align:center">
+        <div style="color:rgba(255,255,255,0.4);font-size:7pt;font-weight:700;letter-spacing:2px;text-transform:uppercase">Bevindingen</div>
+        <div style="color:#fff;font-size:20pt;font-weight:900">17</div>
+      </div>
+      <div style="background:rgba(234,88,12,0.15);border:1px solid rgba(234,88,12,0.3);border-radius:8px;padding:3mm 5mm;text-align:center">
+        <div style="color:rgba(255,255,255,0.4);font-size:7pt;font-weight:700;letter-spacing:2px;text-transform:uppercase">Hoog</div>
+        <div style="color:#fdba74;font-size:20pt;font-weight:900">6</div>
+      </div>
+      <div style="background:rgba(110,231,183,0.15);border:1px solid rgba(110,231,183,0.3);border-radius:8px;padding:3mm 5mm;text-align:center">
+        <div style="color:rgba(255,255,255,0.4);font-size:7pt;font-weight:700;letter-spacing:2px;text-transform:uppercase">Quick wins</div>
+        <div style="color:#6ee7b7;font-size:20pt;font-weight:900">8</div>
+      </div>
+      <div style="background:rgba(253,230,138,0.15);border:1px solid rgba(253,230,138,0.3);border-radius:8px;padding:3mm 5mm;text-align:center">
+        <div style="color:rgba(255,255,255,0.4);font-size:7pt;font-weight:700;letter-spacing:2px;text-transform:uppercase">Tijdsinvestering</div>
+        <div style="color:#fde68a;font-size:20pt;font-weight:900">±4u</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

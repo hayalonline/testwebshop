@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<title>Beveiligingsaudit – Rembro Webshop 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#0F2D5E;--navy2:#1a3d78;--navy3:#0a1f42;
+  --red:#DC2626;--orange:#EA580C;--amber:#D97706;--blue:#2563EB;--gray:#6B7280;--green:#16A34A;
+  --bg:#F8FAFC;--border:#E2E8F0;--text:#0F172A;--muted:#64748B;
+}
+body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--text);font-size:10pt;line-height:1.6}
+code,pre{font-family:'JetBrains Mono','Courier New',monospace}
+
+/* PAGE SYSTEM */
+.page{width:210mm;min-height:297mm;position:relative;overflow:hidden;break-before:page}
+.page:first-child{break-before:auto}
+
+/* ── COVER ── */
+.cover{background:linear-gradient(145deg,#0a1f42 0%,#0F2D5E 50%,#1a3d78 100%);display:flex;flex-direction:column;justify-content:space-between;padding:18mm 16mm 14mm}
+.cover-top{display:flex;justify-content:space-between;align-items:flex-start}
+.cover-brand{color:rgba(255,255,255,0.5);font-size:9pt;font-weight:600;letter-spacing:3px;text-transform:uppercase}
+.cover-badge{background:rgba(220,38,38,0.2);border:1px solid rgba(220,38,38,0.5);color:#fca5a5;font-size:7.5pt;font-weight:700;letter-spacing:2px;padding:4px 10px;border-radius:3px;text-transform:uppercase}
+.cover-center{text-align:center;padding:8mm 0}
+.cover-icon{margin:0 auto 8mm}
+.cover-pre{color:rgba(255,255,255,0.45);font-size:9pt;font-weight:500;letter-spacing:4px;text-transform:uppercase;margin-bottom:5mm}
+.cover-title{color:#fff;font-size:32pt;font-weight:900;line-height:1.1;margin-bottom:3mm}
+.cover-title span{color:#60a5fa}
+.cover-sub{color:rgba(255,255,255,0.55);font-size:11pt;font-weight:300;margin-top:3mm}
+.cover-divider{width:60px;height:3px;background:linear-gradient(90deg,#3b82f6,#60a5fa);margin:5mm auto;border-radius:2px}
+.cover-meta{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4mm;margin-top:8mm}
+.cover-meta-item{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:4mm;text-align:center}
+.cover-meta-label{color:rgba(255,255,255,0.4);font-size:7pt;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:1mm}
+.cover-meta-value{color:#fff;font-size:10pt;font-weight:700}
+.cover-bottom{border-top:1px solid rgba(255,255,255,0.1);padding-top:5mm;display:flex;justify-content:space-between;align-items:center}
+.cover-bottom-left{color:rgba(255,255,255,0.35);font-size:8pt}
+.cover-stats{display:flex;gap:6mm}
+.cover-stat{text-align:center}
+.cover-stat-num{font-size:20pt;font-weight:900;line-height:1}
+.cover-stat-label{color:rgba(255,255,255,0.4);font-size:7pt;font-weight:600;letter-spacing:1px;text-transform:uppercase}
+
+/* ── INNER PAGES ── */
+.inner{padding:14mm 16mm 12mm}
+.page-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:4mm;border-bottom:2px solid var(--navy);margin-bottom:7mm}
+.page-header-title{color:var(--navy);font-size:8pt;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+.page-header-brand{color:var(--muted);font-size:7.5pt}
+.page-footer{position:absolute;bottom:8mm;left:16mm;right:16mm;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:3mm}
+.page-footer span{color:var(--muted);font-size:7.5pt}
+
+/* ── TYPOGRAPHY ── */
+.section-title{font-size:18pt;font-weight:800;color:var(--navy);margin-bottom:2mm;line-height:1.2}
+.section-num{color:#60a5fa;margin-right:2mm}
+.section-intro{color:var(--muted);font-size:9.5pt;margin-bottom:6mm;line-height:1.7}
+h3{font-size:11pt;font-weight:700;color:var(--navy);margin:5mm 0 2mm}
+h4{font-size:9.5pt;font-weight:600;color:var(--text);margin:3mm 0 1mm}
+
+/* ── SEVERITY BADGES ── */
+.badge{display:inline-flex;align-items:center;gap:3px;font-size:7pt;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border-radius:3px}
+.badge-kritiek{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+.badge-hoog{background:#fff7ed;color:#9a3412;border:1px solid #fed7aa}
+.badge-gemiddeld{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
+.badge-laag{background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe}
+.badge-info{background:#f9fafb;color:#374151;border:1px solid #e5e7eb}
+
+/* ── KPI BOXES ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:3mm;margin-bottom:6mm}
+.kpi{border-radius:8px;padding:4mm;text-align:center;border:1px solid}
+.kpi-num{font-size:22pt;font-weight:900;line-height:1}
+.kpi-label{font-size:7.5pt;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-top:1mm}
+.kpi-total{background:#f0f4ff;border-color:#bfdbfe;color:var(--navy)}
+.kpi-krit{background:#fef2f2;border-color:#fecaca}.kpi-krit .kpi-num{color:#dc2626}
+.kpi-hoog{background:#fff7ed;border-color:#fed7aa}.kpi-hoog .kpi-num{color:#ea580c}
+.kpi-gem{background:#fffbeb;border-color:#fde68a}.kpi-gem .kpi-num{color:#d97706}
+.kpi-laag{background:#eff6ff;border-color:#bfdbfe}.kpi-laag .kpi-num{color:#2563eb}
+
+/* ── SUMMARY GRID (chart + top5) ── */
+.summary-grid{display:grid;grid-template-columns:190px 1fr;gap:8mm;align-items:start;margin-bottom:6mm}
+.donut-wrap{text-align:center}
+.donut-legend{margin-top:4mm;display:flex;flex-direction:column;gap:2mm}
+.legend-item{display:flex;align-items:center;gap:3mm;font-size:8pt}
+.legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.legend-pct{margin-left:auto;font-weight:700;color:var(--muted)}
+
+/* ── TABLES ── */
+table{width:100%;border-collapse:collapse;font-size:8.5pt}
+th{background:var(--navy);color:#fff;padding:3mm 4mm;text-align:left;font-size:7.5pt;font-weight:600;letter-spacing:0.5px}
+td{padding:2.5mm 4mm;border-bottom:1px solid var(--border);vertical-align:top}
+tr:nth-child(even) td{background:#f8fafc}
+tr:hover td{background:#f1f5f9}
+.td-id{font-weight:700;color:var(--navy);font-size:8pt;white-space:nowrap}
+.td-loc{font-size:7.5pt;color:var(--muted);font-family:'JetBrains Mono',monospace}
+
+/* ── FINDING CARDS ── */
+.finding-card{border:1px solid var(--border);border-radius:8px;margin-bottom:5mm;overflow:hidden;break-inside:avoid}
+.card-header{padding:3.5mm 4mm;display:flex;align-items:center;gap:3mm}
+.card-header-kritiek{background:linear-gradient(90deg,#fef2f2,#fff)}
+.card-header-hoog{background:linear-gradient(90deg,#fff7ed,#fff)}
+.card-header-gemiddeld{background:linear-gradient(90deg,#fffbeb,#fff)}
+.card-header-laag{background:linear-gradient(90deg,#eff6ff,#fff)}
+.card-header-info{background:linear-gradient(90deg,#f9fafb,#fff)}
+.card-stripe{width:4px;height:100%;min-height:30px;border-radius:2px;flex-shrink:0}
+.stripe-kritiek{background:#dc2626}
+.stripe-hoog{background:#ea580c}
+.stripe-gemiddeld{background:#d97706}
+.stripe-laag{background:#2563eb}
+.stripe-info{background:#6b7280}
+.card-id{font-size:7.5pt;font-weight:700;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.card-title{font-size:10pt;font-weight:700;color:var(--text);flex:1}
+.card-body{padding:3mm 4mm;border-top:1px solid var(--border)}
+.card-row{display:grid;grid-template-columns:80px 1fr;gap:2mm;margin-bottom:2mm;font-size:8.5pt}
+.card-row-label{font-weight:600;color:var(--muted);font-size:7.5pt;text-transform:uppercase;padding-top:1px}
+.card-loc{font-family:'JetBrains Mono',monospace;font-size:8pt;background:#f1f5f9;padding:1px 5px;border-radius:3px;color:var(--navy);display:inline-block}
+pre.code{background:#0f172a;color:#e2e8f0;padding:3mm;border-radius:6px;font-size:7.5pt;line-height:1.6;overflow:hidden;margin:2mm 0;white-space:pre-wrap;word-break:break-all}
+pre.code .cm{color:#64748b}
+pre.code .kw{color:#93c5fd}
+pre.code .str{color:#86efac}
+pre.code .hl{color:#fca5a5;font-weight:600}
+
+/* ── CATEGORY BARS ── */
+.cat-bars{display:flex;flex-direction:column;gap:2.5mm}
+.cat-bar-row{display:grid;grid-template-columns:110px 1fr 22px;align-items:center;gap:3mm;font-size:8pt}
+.cat-bar-label{color:var(--text);font-weight:500}
+.cat-bar-track{background:#e2e8f0;border-radius:3px;height:10px;overflow:hidden}
+.cat-bar-fill{height:100%;border-radius:3px;transition:width 0.3s}
+.cat-bar-num{font-weight:700;color:var(--muted);text-align:right}
+
+/* ── ROADMAP ── */
+.phase-card{border-radius:8px;margin-bottom:4mm;overflow:hidden;break-inside:avoid}
+.phase-header{padding:3.5mm 5mm;display:flex;align-items:center;gap:3mm}
+.phase-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11pt;font-weight:900;flex-shrink:0}
+.phase-title-wrap{}
+.phase-label{font-size:7pt;font-weight:700;letter-spacing:2px;text-transform:uppercase;opacity:0.7}
+.phase-title{font-size:10.5pt;font-weight:800;line-height:1.1}
+.phase-timeline{font-size:8pt;font-weight:600;opacity:0.7;margin-left:auto;white-space:nowrap}
+.phase-body{padding:3mm 5mm 4mm;display:flex;flex-wrap:wrap;gap:2mm}
+.phase-tag{font-size:7.5pt;font-weight:600;padding:2px 8px;border-radius:4px;display:flex;align-items:center;gap:3px}
+.phase-1{background:linear-gradient(135deg,#fef2f2,#fff5f5);border:1px solid #fecaca}
+.phase-1 .phase-header{background:linear-gradient(90deg,#dc2626,#ef4444);color:#fff}
+.phase-1 .phase-num{background:rgba(255,255,255,0.25);color:#fff}
+.phase-1 .phase-tag{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+.phase-2{background:linear-gradient(135deg,#fff7ed,#fffaf5);border:1px solid #fed7aa}
+.phase-2 .phase-header{background:linear-gradient(90deg,#ea580c,#f97316);color:#fff}
+.phase-2 .phase-num{background:rgba(255,255,255,0.25);color:#fff}
+.phase-2 .phase-tag{background:#fff7ed;color:#9a3412;border:1px solid #fed7aa}
+.phase-3{background:linear-gradient(135deg,#eff6ff,#f5f9ff);border:1px solid #bfdbfe}
+.phase-3 .phase-header{background:linear-gradient(90deg,#2563eb,#3b82f6);color:#fff}
+.phase-3 .phase-num{background:rgba(255,255,255,0.25);color:#fff}
+.phase-3 .phase-tag{background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe}
+
+/* ── POSITIVE / CHECKLIST ── */
+.check-list{display:flex;flex-direction:column;gap:3mm}
+.check-item{display:flex;align-items:flex-start;gap:3mm;padding:3mm 4mm;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;break-inside:avoid}
+.check-icon{color:#16a34a;font-size:12pt;font-weight:900;flex-shrink:0;line-height:1.3}
+.check-text{font-size:8.5pt;line-height:1.6}
+.check-text strong{color:var(--navy)}
+
+.verify-item{display:flex;align-items:flex-start;gap:3mm;padding:2.5mm 4mm;background:#fefce8;border:1px solid #fde68a;border-radius:6px;margin-bottom:2mm;break-inside:avoid}
+.verify-icon{color:#d97706;font-size:11pt;flex-shrink:0;line-height:1.4}
+
+/* ── TOC ── */
+.toc-item{display:flex;align-items:baseline;gap:2mm;padding:2mm 0;border-bottom:1px dashed var(--border);font-size:9pt}
+.toc-num{color:var(--navy);font-weight:700;width:14mm;flex-shrink:0}
+.toc-title{flex:1}
+.toc-dots{flex:1;border-bottom:1px dotted var(--border);margin:0 2mm;align-self:center}
+.toc-page{color:var(--muted);font-weight:600;font-size:8.5pt}
+.toc-section{margin-top:4mm;color:var(--muted);font-size:7.5pt;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:2mm}
+
+/* ATTACK SURFACE */
+.method-badge{font-size:7pt;font-weight:700;padding:1px 5px;border-radius:2px;font-family:'JetBrains Mono',monospace}
+.m-get{background:#dcfce7;color:#166534}
+.m-post{background:#dbeafe;color:#1e40af}
+.m-put{background:#fef9c3;color:#854d0e}
+.m-delete{background:#fee2e2;color:#991b1b}
+.auth-yes{color:#dc2626;font-weight:700;font-size:8pt}
+.auth-no{color:#6b7280;font-size:8pt}
+
+@media print {
+  body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .page{break-before:page}
+  .page:first-child{break-before:auto}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════ COVER ══════════════════════ -->
+<div class="page cover">
+  <div class="cover-top">
+    <div class="cover-brand">Rembro Webshop</div>
+    <div class="cover-badge">🔒 Vertrouwelijk</div>
+  </div>
+
+  <div class="cover-center">
+    <div class="cover-icon">
+      <svg width="90" height="100" viewBox="0 0 90 100" fill="none">
+        <path d="M45 4 L84 18 L84 52 C84 74 66 92 45 97 C24 92 6 74 6 52 L6 18 Z" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+        <path d="M45 18 L70 27 L70 50 C70 64 59 74 45 80 C31 74 20 64 20 50 L20 27 Z" fill="rgba(96,165,250,0.15)" stroke="rgba(96,165,250,0.35)" stroke-width="1.5"/>
+        <rect x="33" y="50" width="24" height="19" rx="3" fill="rgba(255,255,255,0.8)"/>
+        <path d="M37 50 L37 44 C37 38 53 38 53 44 L53 50" stroke="rgba(255,255,255,0.8)" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <circle cx="45" cy="60" r="3.5" fill="#0F2D5E"/>
+        <rect x="43.5" y="60" width="3" height="5" rx="1.5" fill="#0F2D5E"/>
+      </svg>
+    </div>
+    <div class="cover-pre">White-box Beveiligingsaudit</div>
+    <div class="cover-title">Security<br><span>Audit</span> Rapport</div>
+    <div class="cover-divider"></div>
+    <div class="cover-sub">Rembro Webshop · Node.js + Express + SQLite · Juni 2026</div>
+
+    <div class="cover-meta">
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Type audit</div>
+        <div class="cover-meta-value">White-box</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Datum</div>
+        <div class="cover-meta-value">Juni 2026</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Methode</div>
+        <div class="cover-meta-value">Statische analyse</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cover-bottom">
+    <div class="cover-bottom-left">
+      Alle bevindingen zijn gebaseerd op broncode-analyse.<br>
+      Geen aanvallen zijn uitgevoerd op live systemen.
+    </div>
+    <div class="cover-stats">
+      <div class="cover-stat">
+        <div class="cover-stat-num" style="color:#fca5a5">3</div>
+        <div class="cover-stat-label">Kritiek</div>
+      </div>
+      <div class="cover-stat">
+        <div class="cover-stat-num" style="color:#fdba74">5</div>
+        <div class="cover-stat-label">Hoog</div>
+      </div>
+      <div class="cover-stat">
+        <div class="cover-stat-num" style="color:#fde68a">8</div>
+        <div class="cover-stat-label">Gemiddeld</div>
+      </div>
+      <div class="cover-stat">
+        <div class="cover-stat-num" style="color:#93c5fd">5</div>
+        <div class="cover-stat-label">Laag/Info</div>
+      </div>
+      <div class="cover-stat">
+        <div class="cover-stat-num" style="color:#fff">21</div>
+        <div class="cover-stat-label">Totaal</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ TOC ══════════════════════ -->
+<div class="page inner">
+  <div class="page-header">
+    <span class="page-header-title">Inhoudsopgave</span>
+    <span class="page-header-brand">Rembro Beveiligingsaudit 2026</span>
+  </div>
+
+  <div class="section-title" style="margin-bottom:6mm"><span class="section-num">—</span>Inhoudsopgave</div>
+
+  <div class="toc-section">Overzicht</div>
+  <div class="toc-item"><span class="toc-num">1</span><span class="toc-title">Directiesamenvatting &amp; Statistieken</span><span class="toc-dots"></span><span class="toc-page">3</span></div>
+  <div class="toc-item"><span class="toc-num">2</span><span class="toc-title">Aanvalsoppervlak</span><span class="toc-dots"></span><span class="toc-page">4</span></div>
+  <div class="toc-item"><span class="toc-num">3</span><span class="toc-title">Bevindingenoverzicht (alle 21)</span><span class="toc-dots"></span><span class="toc-page">5</span></div>
+
+  <div class="toc-section" style="margin-top:5mm">Gedetailleerde Bevindingen</div>
+  <div class="toc-item"><span class="toc-num">4</span><span class="toc-title">Kritieke bevindingen — SEC-001 t/m SEC-003</span><span class="toc-dots"></span><span class="toc-page">6</span></div>
+  <div class="toc-item"><span class="toc-num">5</span><span class="toc-title">Hoge bevindingen — SEC-004 t/m SEC-008</span><span class="toc-dots"></span><span class="toc-page">8</span></div>
+  <div class="toc-item"><span class="toc-num">6</span><span class="toc-title">Gemiddelde bevindingen — SEC-009 t/m SEC-016</span><span class="toc-dots"></span><span class="toc-page">11</span></div>
+  <div class="toc-item"><span class="toc-num">7</span><span class="toc-title">Lage &amp; informationele bevindingen — SEC-017 t/m SEC-021</span><span class="toc-dots"></span><span class="toc-page">14</span></div>
+
+  <div class="toc-section" style="margin-top:5mm">Aanbevelingen</div>
+  <div class="toc-item"><span class="toc-num">8</span><span class="toc-title">Prioriteitenkaart voor herstel</span><span class="toc-dots"></span><span class="toc-page">15</span></div>
+  <div class="toc-item"><span class="toc-num">9</span><span class="toc-title">Positieve bevindingen</span><span class="toc-dots"></span><span class="toc-page">16</span></div>
+  <div class="toc-item"><span class="toc-num">10</span><span class="toc-title">Handmatige verificatie vereist</span><span class="toc-dots"></span><span class="toc-page">16</span></div>
+
+  <!-- mini risk matrix -->
+  <div style="margin-top:10mm;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:5mm">
+    <div style="font-size:8pt;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:4mm">Risicoverdeling per categorie</div>
+    <div class="cat-bars">
+      <div class="cat-bar-row"><span class="cat-bar-label">Authenticatie</span><div class="cat-bar-track"><div class="cat-bar-fill" style="width:100%;background:linear-gradient(90deg,#dc2626,#ef4444)"></div></div><span class="cat-bar-num">4</span></div>
+      <div class="cat-bar-row"><span class="cat-bar-label">Invoervalidatie</span><div class="cat-bar-track"><div class="cat-bar-fill" style="width:100%;background:linear-gradient(90deg,#d97706,#f59e0b)"></div></div><span class="cat-bar-num">4</span></div>
+      <div class="cat-bar-row"><span class="cat-bar-label">Bedrijfslogica</span><div class="cat-bar-track"><div class="cat-bar-fill" style="width:75%;background:linear-gradient(90deg,#ea580c,#f97316)"></div></div><span class="cat-bar-num">3</span></div>
+      <div class="cat-bar-row"><span class="cat-bar-label">API &amp; CORS</span><div class="cat-bar-track"><div class="cat-bar-fill" style="width:75%;background:linear-gradient(90deg,#2563eb,#3b82f6)"></div></div><span class="cat-bar-num">3</span></div>
+      <div class="cat-bar-row"><span class="cat-bar-label">Frontend</span><div class="cat-bar-track"><div class="cat-bar-fill" style="width:50%;background:linear-gradient(90deg,#7c3aed,#8b5cf6)"></div></div><span class="cat-bar-num">2</span></div>
+      <div class="cat-bar-row"><span class="cat-bar-label">HTTP-headers</span><div class="cat-bar-track"><div class="cat-bar-fill" style="width:25%;background:#64748b"></div></div><span class="cat-bar-num">1</span></div>
+      <div class="cat-bar-row"><span class="cat-bar-label">Docker</span><div class="cat-bar-track"><div class="cat-bar-fill" style="width:25%;background:#64748b"></div></div><span class="cat-bar-num">1</span></div>
+      <div class="cat-bar-row"><span class="cat-bar-label">AVG/GDPR</span><div class="cat-bar-track"><div class="cat-bar-fill" style="width:25%;background:#64748b"></div></div><span class="cat-bar-num">1</span></div>
+      <div class="cat-bar-row"><span class="cat-bar-label">Informatielek</span><div class="cat-bar-track"><div class="cat-bar-fill" style="width:25%;background:#64748b"></div></div><span class="cat-bar-num">1</span></div>
+      <div class="cat-bar-row"><span class="cat-bar-label">Injectie (info)</span><div class="cat-bar-track"><div class="cat-bar-fill" style="width:25%;background:#e5e7eb"></div></div><span class="cat-bar-num">1</span></div>
+    </div>
+  </div>
+
+  <div class="page-footer"><span>Rembro Webshop · Beveiligingsaudit 2026</span><span>Pagina 2</span></div>
+</div>
+
+<!-- ══════════════════════ EXECUTIVE SUMMARY ══════════════════════ -->
+<div class="page inner">
+  <div class="page-header">
+    <span class="page-header-title">1. Directiesamenvatting</span>
+    <span class="page-header-brand">Rembro Beveiligingsaudit 2026</span>
+  </div>
+
+  <div class="section-title"><span class="section-num">1.</span>Directiesamenvatting</div>
+  <div class="section-intro">De Rembro-webshop heeft een heldere code-structuur en een aantal goede basismaatregelen. Op het gebied van authenticatieontwerp en HTTP-beveiliging zijn echter drie kritieke en vijf hoge bevindingen aangetroffen die direct risico vormen voor klantgegevens en de administratieve toegang.</div>
+
+  <div class="kpi-grid">
+    <div class="kpi kpi-total"><div class="kpi-num" style="color:var(--navy)">21</div><div class="kpi-label" style="color:var(--muted)">Totaal</div></div>
+    <div class="kpi kpi-krit"><div class="kpi-num">3</div><div class="kpi-label" style="color:#991b1b">Kritiek</div></div>
+    <div class="kpi kpi-hoog"><div class="kpi-num">5</div><div class="kpi-label" style="color:#9a3412">Hoog</div></div>
+    <div class="kpi kpi-gem"><div class="kpi-num">8</div><div class="kpi-label" style="color:#92400e">Gemiddeld</div></div>
+    <div class="kpi kpi-laag"><div class="kpi-num">5</div><div class="kpi-label" style="color:#1e40af">Laag/Info</div></div>
+  </div>
+
+  <div class="summary-grid">
+    <div class="donut-wrap">
+      <!-- SVG Donut Chart: r=75, c=502.65, cx=100,cy=100 -->
+      <!-- Kritiek 3/21=71.81 | Hoog 5/21=119.68 | Medium 8/21=191.49 | Laag 4/21=95.74 | Info 1/21=23.93 -->
+      <svg viewBox="0 0 200 200" width="160" height="160">
+        <g transform="translate(100,100)">
+          <!-- Critical: rotate(-90) start=12oclock -->
+          <circle r="75" fill="none" stroke="#DC2626" stroke-width="32" stroke-dasharray="71.81 430.84" transform="rotate(-90)"/>
+          <!-- High: starts after 51.43deg -->
+          <circle r="75" fill="none" stroke="#EA580C" stroke-width="32" stroke-dasharray="119.68 383.0" transform="rotate(-38.57)"/>
+          <!-- Medium: starts after 137.14deg -->
+          <circle r="75" fill="none" stroke="#D97706" stroke-width="32" stroke-dasharray="191.49 311.16" transform="rotate(47.14)"/>
+          <!-- Low: starts after 274.29deg -->
+          <circle r="75" fill="none" stroke="#2563EB" stroke-width="32" stroke-dasharray="95.74 406.91" transform="rotate(184.29)"/>
+          <!-- Info: starts after 342.86deg -->
+          <circle r="75" fill="none" stroke="#9CA3AF" stroke-width="32" stroke-dasharray="23.93 478.72" transform="rotate(252.86)"/>
+          <!-- White hole -->
+          <circle r="59" fill="white"/>
+          <text text-anchor="middle" y="-6" font-size="24" font-weight="900" fill="#0F2D5E" font-family="Inter,system-ui,sans-serif">21</text>
+          <text text-anchor="middle" y="11" font-size="8.5" fill="#64748B" font-weight="600" font-family="Inter,system-ui,sans-serif" letter-spacing="1">TOTAAL</text>
+        </g>
+      </svg>
+      <div class="donut-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#DC2626"></div><span>Kritiek</span><span class="legend-pct">3 (14%)</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#EA580C"></div><span>Hoog</span><span class="legend-pct">5 (24%)</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#D97706"></div><span>Gemiddeld</span><span class="legend-pct">8 (38%)</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#2563EB"></div><span>Laag</span><span class="legend-pct">4 (19%)</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#9CA3AF"></div><span>Info</span><span class="legend-pct">1 (5%)</span></div>
+      </div>
+    </div>
+
+    <div>
+      <h3 style="margin-top:0">Top 5 risico's</h3>
+      <div style="display:flex;flex-direction:column;gap:2.5mm">
+        <div style="padding:3mm;background:#fef2f2;border-left:3px solid #dc2626;border-radius:0 6px 6px 0">
+          <div style="font-size:7.5pt;font-weight:700;color:#991b1b;margin-bottom:1mm">🔴 SEC-003 · Kritiek</div>
+          <div style="font-size:8.5pt;font-weight:600">Hardgecodeerde standaardwachtwoorden</div>
+          <div style="font-size:8pt;color:var(--muted);margin-top:1mm"><code style="font-size:7.5pt">admin/admin123</code> staat hardgecodeerd én zichtbaar op de inlogpagina. Elke misconfigureerde deployment is direct te compromitteren.</div>
+        </div>
+        <div style="padding:3mm;background:#fef2f2;border-left:3px solid #dc2626;border-radius:0 6px 6px 0">
+          <div style="font-size:7.5pt;font-weight:700;color:#991b1b;margin-bottom:1mm">🔴 SEC-002 · Kritiek</div>
+          <div style="font-size:8.5pt;font-weight:600">Deterministisch, nooit-vervallend admin-token</div>
+          <div style="font-size:8pt;color:var(--muted);margin-top:1mm">Token vervalt nooit en kan niet worden geïnvalideerd. Één lek = permanente admintoegang.</div>
+        </div>
+        <div style="padding:3mm;background:#fef2f2;border-left:3px solid #dc2626;border-radius:0 6px 6px 0">
+          <div style="font-size:7.5pt;font-weight:700;color:#991b1b;margin-bottom:1mm">🔴 SEC-001 · Kritiek</div>
+          <div style="font-size:8.5pt;font-weight:600">Timing-oracle op token-vergelijking</div>
+          <div style="font-size:8pt;color:var(--muted);margin-top:1mm">Gebruik van <code style="font-size:7.5pt">!==</code> laat tijdsmeting toe waarmee het token teken-voor-teken te herleiden is.</div>
+        </div>
+        <div style="padding:3mm;background:#fff7ed;border-left:3px solid #ea580c;border-radius:0 6px 6px 0">
+          <div style="font-size:7.5pt;font-weight:700;color:#9a3412;margin-bottom:1mm">🟠 SEC-004 · Hoog</div>
+          <div style="font-size:8.5pt;font-weight:600">Geen rate limiting op inlogendpunt</div>
+          <div style="font-size:8pt;color:var(--muted);margin-top:1mm">Onbeperkt inlogpogingen mogelijk — online woordenlijstaanval volledig onbelemmerd.</div>
+        </div>
+        <div style="padding:3mm;background:#fff7ed;border-left:3px solid #ea580c;border-radius:0 6px 6px 0">
+          <div style="font-size:7.5pt;font-weight:700;color:#9a3412;margin-bottom:1mm">🟠 SEC-007 · Hoog</div>
+          <div style="font-size:8.5pt;font-weight:600">Race condition in voorraadvermindering</div>
+          <div style="font-size:8pt;color:var(--muted);margin-top:1mm">Gelijktijdige checkout-verzoeken kunnen hetzelfde laatste artikel meerdere keren verkopen.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer"><span>Rembro Webshop · Beveiligingsaudit 2026</span><span>Pagina 3</span></div>
+</div>
+
+<!-- ══════════════════════ ATTACK SURFACE ══════════════════════ -->
+<div class="page inner">
+  <div class="page-header">
+    <span class="page-header-title">2. Aanvalsoppervlak</span>
+    <span class="page-header-brand">Rembro Beveiligingsaudit 2026</span>
+  </div>
+
+  <div class="section-title"><span class="section-num">2.</span>Aanvalsoppervlak</div>
+  <div class="section-intro">Alle HTTP-eindpunten die door de broncode-analyse zijn geïdentificeerd, inclusief authenticatievereisten en risicoclassificatie.</div>
+
+  <table>
+    <thead><tr><th>Methode</th><th>Eindpunt</th><th>Auth</th><th>Risico-opmerking</th></tr></thead>
+    <tbody>
+      <tr><td><span class="method-badge m-get">GET</span></td><td class="td-loc">/api/health</td><td class="auth-no">—</td><td>Publiek, geen gevoelige data</td></tr>
+      <tr><td><span class="method-badge m-get">GET</span></td><td class="td-loc">/api-docs</td><td class="auth-no">—</td><td>Swagger UI publiek — "Try it out" actief</td></tr>
+      <tr><td><span class="method-badge m-get">GET</span></td><td class="td-loc">/api-docs/openapi.json</td><td class="auth-no">—</td><td>Volledige API-schema publiek zichtbaar</td></tr>
+      <tr><td><span class="method-badge m-post">POST</span></td><td class="td-loc">/api/auth/login</td><td class="auth-no">—</td><td style="color:#dc2626;font-weight:600">Geen rate limiting → brute-force mogelijk</td></tr>
+      <tr><td><span class="method-badge m-get">GET</span></td><td class="td-loc">/api/products</td><td class="auth-no">—</td><td>Publiek — volledige productlijst</td></tr>
+      <tr><td><span class="method-badge m-get">GET</span></td><td class="td-loc">/api/products/:id</td><td class="auth-no">—</td><td>Publiek — product op id of slug</td></tr>
+      <tr><td><span class="method-badge m-post">POST</span></td><td class="td-loc">/api/products</td><td class="auth-yes">Admin</td><td>Correct beveiligd</td></tr>
+      <tr><td><span class="method-badge m-put">PUT</span></td><td class="td-loc">/api/products/:id</td><td class="auth-yes">Admin</td><td>Correct beveiligd</td></tr>
+      <tr><td><span class="method-badge m-delete">DELETE</span></td><td class="td-loc">/api/products/:id</td><td class="auth-yes">Admin</td><td>Correct beveiligd</td></tr>
+      <tr><td><span class="method-badge m-get">GET</span></td><td class="td-loc">/api/orders</td><td class="auth-yes">Admin</td><td>Alle bestellingen + klant-PII, geen paginering</td></tr>
+      <tr><td><span class="method-badge m-get">GET</span></td><td class="td-loc">/api/orders/:id</td><td class="auth-yes">Admin</td><td>Correct beveiligd</td></tr>
+      <tr><td><span class="method-badge m-post">POST</span></td><td class="td-loc">/api/orders</td><td class="auth-no">—</td><td style="color:#d97706;font-weight:600">Publiek — geen limiet op items, geen idempotentie</td></tr>
+      <tr><td><span class="method-badge m-put">PUT</span></td><td class="td-loc">/api/orders/:id/status</td><td class="auth-yes">Admin</td><td>Correct beveiligd</td></tr>
+      <tr><td><span class="method-badge m-delete">DELETE</span></td><td class="td-loc">/api/orders/:id</td><td class="auth-yes">Admin</td><td>Correct beveiligd</td></tr>
+      <tr><td><span class="method-badge m-get">GET</span></td><td class="td-loc">/* (SPA)</td><td class="auth-no">—</td><td>Statische bestanden incl. /admin-pagina</td></tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top:6mm;display:grid;grid-template-columns:1fr 1fr 1fr;gap:4mm">
+    <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:4mm;text-align:center">
+      <div style="font-size:20pt;font-weight:900;color:#dc2626">1</div>
+      <div style="font-size:8pt;color:#991b1b;font-weight:600">Eindpunt zonder auth<br>met hoog risico</div>
+      <div style="font-size:7.5pt;color:var(--muted);margin-top:1mm">POST /api/auth/login</div>
+    </div>
+    <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:4mm;text-align:center">
+      <div style="font-size:20pt;font-weight:900;color:#ea580c">2</div>
+      <div style="font-size:8pt;color:#9a3412;font-weight:600">Publieke eindpunten<br>met medium risico</div>
+      <div style="font-size:7.5pt;color:var(--muted);margin-top:1mm">POST /api/orders, GET /api-docs</div>
+    </div>
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:4mm;text-align:center">
+      <div style="font-size:20pt;font-weight:900;color:#16a34a">7</div>
+      <div style="font-size:8pt;color:#166534;font-weight:600">Admin-eindpunten<br>correct beveiligd</div>
+      <div style="font-size:7.5pt;color:var(--muted);margin-top:1mm">requireAdmin middleware</div>
+    </div>
+  </div>
+
+  <div class="page-footer"><span>Rembro Webshop · Beveiligingsaudit 2026</span><span>Pagina 4</span></div>
+</div>
+
+<!-- ══════════════════════ OVERVIEW TABLE ══════════════════════ -->
+<div class="page inner">
+  <div class="page-header">
+    <span class="page-header-title">3. Bevindingenoverzicht</span>
+    <span class="page-header-brand">Rembro Beveiligingsaudit 2026</span>
+  </div>
+
+  <div class="section-title"><span class="section-num">3.</span>Alle bevindingen</div>
+  <div class="section-intro">Gesorteerd op ernst. Klik op het ID voor de gedetailleerde beschrijving in de volgende secties.</div>
+
+  <table>
+    <thead><tr><th width="52">ID</th><th width="68">Ernst</th><th>Titel</th><th>Locatie</th><th width="90">Categorie</th></tr></thead>
+    <tbody>
+      <tr><td class="td-id">SEC-001</td><td><span class="badge badge-kritiek">Kritiek</span></td><td>Niet timing-safe token-vergelijking</td><td class="td-loc">server/utils/auth.js:22</td><td>Authenticatie</td></tr>
+      <tr><td class="td-id">SEC-002</td><td><span class="badge badge-kritiek">Kritiek</span></td><td>Deterministisch, nooit-vervallend admin-token</td><td class="td-loc">server/utils/auth.js:8</td><td>Authenticatie</td></tr>
+      <tr><td class="td-id">SEC-003</td><td><span class="badge badge-kritiek">Kritiek</span></td><td>Hardgecodeerde standaardwachtwoorden + hint</td><td class="td-loc">auth.js:4, AdminPage.jsx:232</td><td>Auth / Secrets</td></tr>
+      <tr><td class="td-id">SEC-004</td><td><span class="badge badge-hoog">Hoog</span></td><td>Geen rate limiting op inlogendpunt</td><td class="td-loc">server/routes/auth.js:8</td><td>Authenticatie</td></tr>
+      <tr><td class="td-id">SEC-005</td><td><span class="badge badge-hoog">Hoog</span></td><td>Wildcard CORS — alle origins toegestaan</td><td class="td-loc">server/index.js:19</td><td>API-beveiliging</td></tr>
+      <tr><td class="td-id">SEC-006</td><td><span class="badge badge-hoog">Hoog</span></td><td>Geen beveiligingsheaders (geen CSP, HSTS)</td><td class="td-loc">server/index.js</td><td>HTTP-headers</td></tr>
+      <tr><td class="td-id">SEC-007</td><td><span class="badge badge-hoog">Hoog</span></td><td>Race condition in voorraadvermindering</td><td class="td-loc">server/routes/orders.js:82</td><td>Bedrijfslogica</td></tr>
+      <tr><td class="td-id">SEC-008</td><td><span class="badge badge-hoog">Hoog</span></td><td>Geen idempotentie — dubbele bestelling mogelijk</td><td class="td-loc">server/routes/orders.js:78</td><td>Bedrijfslogica</td></tr>
+      <tr><td class="td-id">SEC-009</td><td><span class="badge badge-gemiddeld">Gemiddeld</span></td><td>SELECT * lekt alle productkolommen</td><td class="td-loc">server/routes/orders.js:84</td><td>Data</td></tr>
+      <tr><td class="td-id">SEC-010</td><td><span class="badge badge-gemiddeld">Gemiddeld</span></td><td>Geen max. stringlengte — opslag-DoS mogelijk</td><td class="td-loc">server/utils/validation.js:5</td><td>Invoervalidatie</td></tr>
+      <tr><td class="td-id">SEC-011</td><td><span class="badge badge-gemiddeld">Gemiddeld</span></td><td>Validatie staat prijs = 0 toe</td><td class="td-loc">server/utils/validation.js:12</td><td>Invoervalidatie</td></tr>
+      <tr><td class="td-id">SEC-012</td><td><span class="badge badge-gemiddeld">Gemiddeld</span></td><td>Onbeperkt orderregels — event-loop DoS</td><td class="td-loc">server/routes/orders.js:44</td><td>Bedrijfslogica</td></tr>
+      <tr><td class="td-id">SEC-013</td><td><span class="badge badge-gemiddeld">Gemiddeld</span></td><td>Swagger UI via CDN zonder SRI</td><td class="td-loc">server/openapi.js:323</td><td>Supply chain</td></tr>
+      <tr><td class="td-id">SEC-014</td><td><span class="badge badge-gemiddeld">Gemiddeld</span></td><td>Fouthandler logt volledige stacktraces</td><td class="td-loc">server/index.js:53</td><td>Informatielek</td></tr>
+      <tr><td class="td-id">SEC-015</td><td><span class="badge badge-gemiddeld">Gemiddeld</span></td><td>Container draait als root</td><td class="td-loc">Dockerfile</td><td>Docker</td></tr>
+      <tr><td class="td-id">SEC-016</td><td><span class="badge badge-gemiddeld">Gemiddeld</span></td><td>Klant-PII zonder AVG-retentiebeleid</td><td class="td-loc">server/db/database.js:44</td><td>AVG/GDPR</td></tr>
+      <tr><td class="td-id">SEC-017</td><td><span class="badge badge-laag">Laag</span></td><td>Winkelwagenprijzen in localStorage</td><td class="td-loc">CartContext.jsx:19</td><td>Frontend</td></tr>
+      <tr><td class="td-id">SEC-018</td><td><span class="badge badge-laag">Laag</span></td><td>Adminpagina publiek met credential-hint</td><td class="td-loc">App.jsx:23, AdminPage.jsx:232</td><td>Frontend</td></tr>
+      <tr><td class="td-id">SEC-019</td><td><span class="badge badge-laag">Laag</span></td><td>Bestellingenlijst zonder paginering</td><td class="td-loc">server/routes/orders.js:63</td><td>API / AVG</td></tr>
+      <tr><td class="td-id">SEC-020</td><td><span class="badge badge-laag">Laag</span></td><td>Productafbeelding accepteert willekeurige URL's</td><td class="td-loc">server/routes/products.js:28</td><td>Invoervalidatie</td></tr>
+      <tr><td class="td-id">SEC-021</td><td><span class="badge badge-info">Info</span></td><td>id/slug-lookup gebruikt correct prepared statement</td><td class="td-loc">server/routes/products.js:43</td><td>Injectie</td></tr>
+    </tbody>
+  </table>
+
+  <div class="page-footer"><span>Rembro Webshop · Beveiligingsaudit 2026</span><span>Pagina 5</span></div>
+</div>
+
+<!-- ══════════════════════ CRITICAL FINDINGS ══════════════════════ -->
+<div class="page inner">
+  <div class="page-header">
+    <span class="page-header-title">4. Kritieke bevindingen</span>
+    <span class="page-header-brand">Rembro Beveiligingsaudit 2026</span>
+  </div>
+  <div class="section-title"><span class="section-num">4.</span>Kritieke bevindingen</div>
+  <div class="section-intro">De volgende drie bevindingen vereisen onmiddellijke actie. Ze vormen samen een directe dreiging voor de integriteit van de adminomgeving.</div>
+
+  <!-- SEC-001 -->
+  <div class="finding-card">
+    <div class="card-header card-header-kritiek">
+      <div class="card-stripe stripe-kritiek"></div>
+      <span class="badge badge-kritiek">Kritiek</span>
+      <span class="card-id">SEC-001</span>
+      <span class="card-title">Niet timing-safe token-vergelijking</span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">server/utils/auth.js:22</span></span></div>
+      <div class="card-row"><span class="card-row-label">Categorie</span><span>Authenticatie · CWE-208</span></div>
+      <div class="card-row"><span class="card-row-label">Probleem</span><span>De <code>requireAdmin</code>-middleware vergelijkt het Bearer-token via <code>!==</code> (short-circuit string-vergelijking). Via nauwkeurige tijdmeting over honderden verzoeken kan een aanvaller het token teken-voor-teken reconstrueren zonder de volledige 64-karakter hex-digest te hoeven brute-forcen.</span></div>
+      <div class="card-row"><span class="card-row-label">Impact</span><span>Herstel van het admin-token → volledige admintoegang (lees alle klant-PII, beheer producten/bestellingen).</span></div>
+<pre class="code"><span class="cm">// server/utils/auth.js:19-27 — PROBLEEM</span>
+<span class="kw">if</span> (token <span class="hl">!==</span> createAdminToken()) {   <span class="cm">// ← niet constant-time!</span>
+  next(httpError(401, <span class="str">"Niet ingelogd als admin."</span>));
+}
+
+<span class="cm">// HERSTEL — gebruik crypto.timingSafeEqual</span>
+<span class="kw">const</span> expected = createAdminToken();
+<span class="kw">const</span> tokBuf = Buffer.from(token.padEnd(expected.length, <span class="str">"\0"</span>));
+<span class="kw">const</span> expBuf = Buffer.from(expected);
+<span class="kw">if</span> (!crypto.<span class="hl">timingSafeEqual</span>(tokBuf, expBuf)) { ... }</pre>
+    </div>
+  </div>
+
+  <!-- SEC-002 -->
+  <div class="finding-card">
+    <div class="card-header card-header-kritiek">
+      <div class="card-stripe stripe-kritiek"></div>
+      <span class="badge badge-kritiek">Kritiek</span>
+      <span class="card-id">SEC-002</span>
+      <span class="card-title">Deterministisch, nooit-vervallend admin-token</span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">server/utils/auth.js:8–13</span> · <span class="card-loc">AdminPage.jsx:74</span></span></div>
+      <div class="card-row"><span class="card-row-label">Categorie</span><span>Authenticatie · CWE-613 · CWE-330</span></div>
+      <div class="card-row"><span class="card-row-label">Probleem</span><span>Token = <code>HMAC-SHA256(secret, "user:pass")</code> — altijd dezelfde waarde, nooit vervallend, niet te invalideren zonder serverherstart. Opgeslagen in <code>sessionStorage</code>.</span></div>
+      <div class="card-row"><span class="card-row-label">Impact</span><span>Één gelekt token → permanente admintoegang. Uitloggen beëindigt enkel de browser-sessie, niet de server-sessie.</span></div>
+<pre class="code"><span class="cm">// server/utils/auth.js:8-13 — PROBLEEM</span>
+<span class="kw">export function</span> createAdminToken() {
+  <span class="kw">return</span> crypto.createHmac(<span class="str">"sha256"</span>, adminSecret)
+    .update(<span class="str">`${adminUser}:${adminPassword}`</span>)
+    .digest(<span class="str">"hex"</span>);  <span class="cm">// ← deterministisch, geen expiry</span>
+}
+
+<span class="cm">// HERSTEL — willekeurige sessietoken met expiry</span>
+<span class="kw">const</span> sessions = <span class="kw">new</span> Map();
+<span class="kw">export function</span> createSession() {
+  <span class="kw">const</span> token = crypto.randomBytes(32).toString(<span class="str">"hex"</span>);
+  sessions.set(token, { expiresAt: Date.now() + 8 * 3600 * 1000 });
+  <span class="kw">return</span> token;
+}</pre>
+    </div>
+  </div>
+
+  <!-- SEC-003 -->
+  <div class="finding-card">
+    <div class="card-header card-header-kritiek">
+      <div class="card-stripe stripe-kritiek"></div>
+      <span class="badge badge-kritiek">Kritiek</span>
+      <span class="card-id">SEC-003</span>
+      <span class="card-title">Hardgecodeerde standaardwachtwoorden + zichtbare hint</span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">server/utils/auth.js:4–6</span> · <span class="card-loc">AdminPage.jsx:232</span> · <span class="card-loc">server/openapi.js:144</span></span></div>
+      <div class="card-row"><span class="card-row-label">Categorie</span><span>Authenticatie / Secrets · CWE-798 · OWASP A07:2021</span></div>
+      <div class="card-row"><span class="card-row-label">Probleem</span><span>Fallback-defaults <code>admin/admin123/local-admin-secret</code> actief wanneer env-vars ontbreken. De inlogpagina toont de credentials zichtbaar voor alle bezoekers. OpenAPI-spec documenteert dezelfde waarden.</span></div>
+      <div class="card-row"><span class="card-row-label">Impact</span><span>In elke misconfigureerde deployment logt elke bezoeker direct in als admin.</span></div>
+<pre class="code"><span class="cm">// server/utils/auth.js:4-6 — PROBLEEM</span>
+<span class="kw">const</span> adminPassword = process.env.ADMIN_PASSWORD <span class="hl">|| "admin123"</span>;
+<span class="kw">const</span> adminSecret   = process.env.ADMIN_SECRET   <span class="hl">|| "local-admin-secret"</span>;
+
+<span class="cm">// HERSTEL — crash bij ontbrekende env-vars</span>
+<span class="kw">if</span> (!process.env.ADMIN_PASSWORD || !process.env.ADMIN_SECRET) {
+  console.error(<span class="str">"FATAL: ADMIN_PASSWORD en ADMIN_SECRET zijn vereist."</span>);
+  process.exit(1);
+}</pre>
+    </div>
+  </div>
+
+  <div class="page-footer"><span>Rembro Webshop · Beveiligingsaudit 2026</span><span>Pagina 6</span></div>
+</div>
+
+<!-- ══════════════════════ HIGH FINDINGS ══════════════════════ -->
+<div class="page inner">
+  <div class="page-header">
+    <span class="page-header-title">5. Hoge bevindingen</span>
+    <span class="page-header-brand">Rembro Beveiligingsaudit 2026</span>
+  </div>
+  <div class="section-title"><span class="section-num">5.</span>Hoge bevindingen</div>
+
+  <!-- SEC-004 -->
+  <div class="finding-card">
+    <div class="card-header card-header-hoog">
+      <div class="card-stripe stripe-hoog"></div>
+      <span class="badge badge-hoog">Hoog</span>
+      <span class="card-id">SEC-004</span>
+      <span class="card-title">Geen rate limiting op inlogendpunt</span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">server/routes/auth.js:8–24</span> · <span class="card-loc">server/index.js</span></span></div>
+      <div class="card-row"><span class="card-row-label">Categorie</span><span>Authenticatie · CWE-307 · OWASP A07:2021</span></div>
+      <div class="card-row"><span class="card-row-label">Probleem</span><span>Geen <code>express-rate-limit</code>, geen account-lockout, geen CAPTCHA. Onbeperkt inlogpogingen per seconde mogelijk.</span></div>
+      <div class="card-row"><span class="card-row-label">Herstel</span><span><code>npm install express-rate-limit</code> — maximaal 10 pogingen per 15 minuten op <code>POST /api/auth/login</code>.</span></div>
+    </div>
+  </div>
+
+  <!-- SEC-005 -->
+  <div class="finding-card">
+    <div class="card-header card-header-hoog">
+      <div class="card-stripe stripe-hoog"></div>
+      <span class="badge badge-hoog">Hoog</span>
+      <span class="card-id">SEC-005</span>
+      <span class="card-title">Wildcard CORS — alle origins toegestaan</span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">server/index.js:19</span></span></div>
+      <div class="card-row"><span class="card-row-label">Categorie</span><span>API-beveiliging · CWE-346 · OWASP A05:2021</span></div>
+      <div class="card-row"><span class="card-row-label">Probleem</span><span><code>app.use(cors())</code> zonder configuratie staat alle origins toe. Een kwaadaardige website kan in de browser van een ingelogde beheerder <code>GET /api/orders</code> aanroepen en alle klant-PII uitlezen.</span></div>
+<pre class="code"><span class="cm">// HERSTEL</span>
+app.use(cors({
+  origin: process.env.ALLOWED_ORIGIN || <span class="str">"http://localhost:5173"</span>,
+  methods: [<span class="str">"GET"</span>, <span class="str">"POST"</span>, <span class="str">"PUT"</span>, <span class="str">"DELETE"</span>],
+  allowedHeaders: [<span class="str">"Content-Type"</span>, <span class="str">"Authorization"</span>]
+}));</pre>
+    </div>
+  </div>
+
+  <!-- SEC-006 -->
+  <div class="finding-card">
+    <div class="card-header card-header-hoog">
+      <div class="card-stripe stripe-hoog"></div>
+      <span class="badge badge-hoog">Hoog</span>
+      <span class="card-id">SEC-006</span>
+      <span class="card-title">Geen beveiligingsheaders — geen helmet, geen CSP, geen HSTS</span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">server/index.js</span> (volledig ontbrekend)</span></div>
+      <div class="card-row"><span class="card-row-label">Risico's</span><span>Clickjacking (geen X-Frame-Options), MIME-sniffing (geen nosniff), geen XSS-barrière (geen CSP), geen HTTPS-afdwinging (geen HSTS).</span></div>
+      <div class="card-row"><span class="card-row-label">Herstel</span><span><code>npm install helmet</code> → <code>app.use(helmet())</code> vóór alle routes. CSP toevoegen die unpkg.com toestaat voor Swagger UI.</span></div>
+    </div>
+  </div>
+
+  <!-- SEC-007 -->
+  <div class="finding-card">
+    <div class="card-header card-header-hoog">
+      <div class="card-stripe stripe-hoog"></div>
+      <span class="badge badge-hoog">Hoog</span>
+      <span class="card-id">SEC-007</span>
+      <span class="card-title">Race condition in voorraadvermindering — overselling mogelijk</span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">server/routes/orders.js:82–131</span> · <span class="card-loc">server/db/database.js:18</span></span></div>
+      <div class="card-row"><span class="card-row-label">Categorie</span><span>Bedrijfslogica · CWE-362</span></div>
+      <div class="card-row"><span class="card-row-label">Probleem</span><span>Transactie start met <code>BEGIN</code> (deferred). Twee gelijktijdige POST-verzoeken lezen beide <code>stock=1</code>, beide valideren succesvol, beiden maken een order aan. Stock wordt 2× verlaagd.</span></div>
+<pre class="code"><span class="cm">// server/db/database.js:18 — PROBLEEM</span>
+db.exec(<span class="hl">"BEGIN"</span>);  <span class="cm">// ← deferred, geen schrijfslot bij aanvang</span>
+
+<span class="cm">// HERSTEL</span>
+db.exec(<span class="hl">"BEGIN IMMEDIATE"</span>);  <span class="cm">// ← schrijfslot direct, elimineert race</span></pre>
+    </div>
+  </div>
+
+  <!-- SEC-008 -->
+  <div class="finding-card">
+    <div class="card-header card-header-hoog">
+      <div class="card-stripe stripe-hoog"></div>
+      <span class="badge badge-hoog">Hoog</span>
+      <span class="card-id">SEC-008</span>
+      <span class="card-title">Geen idempotentie — dubbele bestelling bij dubbelklik</span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">server/routes/orders.js:78–137</span> · <span class="card-loc">CheckoutPage.jsx:41</span></span></div>
+      <div class="card-row"><span class="card-row-label">Categorie</span><span>Bedrijfslogica · CWE-362</span></div>
+      <div class="card-row"><span class="card-row-label">Probleem</span><span>Geen duplicate-detectie. Dubbelklik of netwerkherpoging maakt twee identieke orders. Stock wordt tweemaal verlaagd.</span></div>
+      <div class="card-row"><span class="card-row-label">Herstel</span><span>UUID <code>idempotencyKey</code> genereren bij laden van afrekenformulier → meesturen in payload → UNIQUE-constraint op <code>orders</code>-tabel → bij duplicaat bestaande order teruggeven.</span></div>
+    </div>
+  </div>
+
+  <div class="page-footer"><span>Rembro Webshop · Beveiligingsaudit 2026</span><span>Pagina 8</span></div>
+</div>
+
+<!-- ══════════════════════ MEDIUM FINDINGS ══════════════════════ -->
+<div class="page inner">
+  <div class="page-header">
+    <span class="page-header-title">6. Gemiddelde bevindingen</span>
+    <span class="page-header-brand">Rembro Beveiligingsaudit 2026</span>
+  </div>
+  <div class="section-title"><span class="section-num">6.</span>Gemiddelde bevindingen</div>
+
+  <div class="finding-card">
+    <div class="card-header card-header-gemiddeld">
+      <div class="card-stripe stripe-gemiddeld"></div>
+      <span class="badge badge-gemiddeld">Gemiddeld</span><span class="card-id">SEC-009</span>
+      <span class="card-title">SELECT * lekt alle productkolommen in orderverwerking</span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">server/routes/orders.js:84</span></span></div>
+      <div class="card-row"><span class="card-row-label">Probleem</span><span>Orderverwerking gebruikt <code>SELECT * FROM products</code> i.p.v. expliciete kolomselectie. Toekomstige gevoelige kolommen (inkoopprijs, interne notities) worden automatisch meegenomen.</span></div>
+      <div class="card-row"><span class="card-row-label">Herstel</span><span>Vervang door <code>SELECT id, name, price, stock FROM products WHERE id = ?</code></span></div>
+    </div>
+  </div>
+
+  <div class="finding-card">
+    <div class="card-header card-header-gemiddeld">
+      <div class="card-stripe stripe-gemiddeld"></div>
+      <span class="badge badge-gemiddeld">Gemiddeld</span><span class="card-id">SEC-010</span>
+      <span class="card-title">Geen maximale stringlengte — opslag-DoS via publiek endpoint</span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">server/utils/validation.js:5–9</span></span></div>
+      <div class="card-row"><span class="card-row-label">Probleem</span><span><code>requireString</code> controleert alleen minimumlengte. Anonieme bezoekers kunnen via <code>POST /api/orders</code> velden van bijna 1 MB insturen. Herhaling vult de SQLite-database en schijf totdat de applicatie faalt.</span></div>
+      <div class="card-row"><span class="card-row-label">Herstel</span><span>Voeg <code>maxLength</code>-parameter toe (bijv. 500 voor naam/adres, 5000 voor beschrijving).</span></div>
+    </div>
+  </div>
+
+  <div class="finding-card">
+    <div class="card-header card-header-gemiddeld">
+      <div class="card-stripe stripe-gemiddeld"></div>
+      <span class="badge badge-gemiddeld">Gemiddeld</span><span class="card-id">SEC-011</span>
+      <span class="card-title">requirePositiveNumber staat prijs = 0 toe</span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">server/utils/validation.js:12–18</span></span></div>
+      <div class="card-row"><span class="card-row-label">Probleem</span><span>Grenswaarde is <code>number &lt; 0</code>, waardoor <code>0</code> toegestaan is. Een (gecompromitteerde) beheerder kan productprijzen op €0 zetten.</span></div>
+      <div class="card-row"><span class="card-row-label">Herstel</span><span>Gebruik <code>number &lt;= 0</code> voor het prijsveld of maak een aparte <code>requirePrice</code>-functie.</span></div>
+    </div>
+  </div>
+
+  <div class="finding-card">
+    <div class="card-header card-header-gemiddeld">
+      <div class="card-stripe stripe-gemiddeld"></div>
+      <span class="badge badge-gemiddeld">Gemiddeld</span><span class="card-id">SEC-012</span>
+      <span class="card-title">Onbeperkt orderregels — event-loop DoS via publiek endpoint</span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">server/routes/orders.js:44–60</span></span></div>
+      <div class="card-row"><span class="card-row-label">Probleem</span><span>Geen bovengrens op <code>body.items.length</code>. Een verzoek met 10.000 items voert 10.000 synchrone SELECT-queries uit en blokkeert de Node.js event loop voor alle andere verzoeken. Geen auth vereist.</span></div>
+      <div class="card-row"><span class="card-row-label">Herstel</span><span>Voeg toe: <code>if (body.items.length &gt; 50) throw httpError(400, "Max. 50 producten per bestelling.");</code></span></div>
+    </div>
+  </div>
+
+  <div class="finding-card">
+    <div class="card-header card-header-gemiddeld">
+      <div class="card-stripe stripe-gemiddeld"></div>
+      <span class="badge badge-gemiddeld">Gemiddeld</span><span class="card-id">SEC-013</span>
+      <span class="card-title">Swagger UI via CDN zonder SRI + persistAuthorization actief</span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">server/openapi.js:323–329</span></span></div>
+      <div class="card-row"><span class="card-row-label">Probleem</span><span>JavaScript geladen van <code>unpkg.com</code> zonder Subresource Integrity (SRI). Bij CDN-compromittering draait kwaadaardig script in Swagger-context. <code>persistAuthorization: true</code> slaat admin-tokens op in localStorage.</span></div>
+      <div class="card-row"><span class="card-row-label">Herstel</span><span>Bundel Swagger UI lokaal als npm-dependency. Zet <code>persistAuthorization: false</code>. Overweeg <code>/api-docs</code> te blokkeren in productie.</span></div>
+    </div>
+  </div>
+
+  <div class="finding-card">
+    <div class="card-header card-header-gemiddeld">
+      <div class="card-stripe stripe-gemiddeld"></div>
+      <span class="badge badge-gemiddeld">Gemiddeld</span><span class="card-id">SEC-014</span>
+      <span class="card-title">Fouthandler logt volledige stacktraces naar stdout</span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">server/index.js:53–58</span></span></div>
+      <div class="card-row"><span class="card-row-label">Probleem</span><span><code>console.error(err)</code> logt volledige Error-objecten inclusief bestandspaden en regelnummers. In cloud-omgevingen met brede log-toegang lekken implementatiedetails.</span></div>
+      <div class="card-row"><span class="card-row-label">Herstel</span><span>Logs behouden voor beheerder, maar stuur bij 5xx-fouten alleen een generieke boodschap naar de client: <code>if (status &gt;= 500) message = "Serverfout."</code></span></div>
+    </div>
+  </div>
+
+  <div class="finding-card">
+    <div class="card-header card-header-gemiddeld">
+      <div class="card-stripe stripe-gemiddeld"></div>
+      <span class="badge badge-gemiddeld">Gemiddeld</span><span class="card-id">SEC-015</span>
+      <span class="card-title">Container draait als root</span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">Dockerfile</span> (geen USER-directive)</span></div>
+      <div class="card-row"><span class="card-row-label">Probleem</span><span>Node.js-applicatie draait als UID 0 (root) in de container. Bij exploitatie van een dependency-kwetsbaarheid krijgt de aanvaller root-toegang in de container.</span></div>
+      <div class="card-row"><span class="card-row-label">Herstel</span><span><code>RUN adduser --system rembro</code> + <code>USER rembro</code> toevoegen in de runtime-stage van het Dockerfile.</span></div>
+    </div>
+  </div>
+
+  <div class="finding-card">
+    <div class="card-header card-header-gemiddeld">
+      <div class="card-stripe stripe-gemiddeld"></div>
+      <span class="badge badge-gemiddeld">Gemiddeld</span><span class="card-id">SEC-016</span>
+      <span class="card-title">Klant-PII opgeslagen zonder AVG-retentiebeleid of verwijdermechanisme</span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">server/db/database.js:44–56</span></span></div>
+      <div class="card-row"><span class="card-row-label">Categorie</span><span>AVG/GDPR · Art. 17 · Art. 83</span></div>
+      <div class="card-row"><span class="card-row-label">Probleem</span><span>Naam, e-mail, telefoon, adres worden opgeslagen zonder: bewaartermijn, anonimiseringsmechanisme, klant-verwijderverzoek (recht op vergetelheid), privacyverklaring.</span></div>
+      <div class="card-row"><span class="card-row-label">Impact</span><span>Potentiële AVG-boete tot 4% jaaromzet of €20M (Art. 83 GDPR).</span></div>
+      <div class="card-row"><span class="card-row-label">Herstel</span><span>Definieer bewaartermijn. Implementeer anonimisatie na retentieperiode. Voeg privacyverklaring toe aan de webshop.</span></div>
+    </div>
+  </div>
+
+  <div class="page-footer"><span>Rembro Webshop · Beveiligingsaudit 2026</span><span>Pagina 11</span></div>
+</div>
+
+<!-- ══════════════════════ LOW/INFO FINDINGS ══════════════════════ -->
+<div class="page inner">
+  <div class="page-header">
+    <span class="page-header-title">7. Lage &amp; informationele bevindingen</span>
+    <span class="page-header-brand">Rembro Beveiligingsaudit 2026</span>
+  </div>
+  <div class="section-title"><span class="section-num">7.</span>Lage &amp; informationele bevindingen</div>
+
+  <div class="finding-card">
+    <div class="card-header card-header-laag">
+      <div class="card-stripe stripe-laag"></div>
+      <span class="badge badge-laag">Laag</span><span class="card-id">SEC-017</span>
+      <span class="card-title">Winkelwagenprijzen in localStorage (server herberekent correct)</span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">client/src/context/CartContext.jsx:19</span></span></div>
+      <div class="card-row"><span class="card-row-label">Probleem</span><span>Prijzen opgeslagen in localStorage. Weergave kan afwijken van werkelijke prijs als localStorage wordt gemanipuleerd. De server herberekent echter altijd het totaal vanuit de database — geen financieel risico.</span></div>
+      <div class="card-row"><span class="card-row-label">Herstel</span><span>Sla geen prijs op in localStorage. Laad actuele prijs bij het openen van de afrekenenpagina opnieuw van de API.</span></div>
+    </div>
+  </div>
+
+  <div class="finding-card">
+    <div class="card-header card-header-laag">
+      <div class="card-stripe stripe-laag"></div>
+      <span class="badge badge-laag">Laag</span><span class="card-id">SEC-018</span>
+      <span class="card-title">Adminpagina publiek bereikbaar met credential-hint</span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">client/src/App.jsx:23</span> · <span class="card-loc">AdminPage.jsx:232</span></span></div>
+      <div class="card-row"><span class="card-row-label">Probleem</span><span>/admin is een publieke route. API-endpoints zijn correct beveiligd, maar de inlogpagina met credential-hint is zichtbaar voor alle bezoekers (verergert SEC-003).</span></div>
+      <div class="card-row"><span class="card-row-label">Herstel</span><span>Verwijder credential-hint (gedekt in SEC-003). Overweeg een minder voor de hand liggend adminpad.</span></div>
+    </div>
+  </div>
+
+  <div class="finding-card">
+    <div class="card-header card-header-laag">
+      <div class="card-stripe stripe-laag"></div>
+      <span class="badge badge-laag">Laag</span><span class="card-id">SEC-019</span>
+      <span class="card-title">Bestellingenlijst zonder paginering — groeit onbeperkt</span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">server/routes/orders.js:63–66</span></span></div>
+      <div class="card-row"><span class="card-row-label">Probleem</span><span><code>GET /api/orders</code> retourneert alle bestellingen in één response. Bij groeiend volume: grote JSON-blob met veel klant-PII, performance-problemen en gegevensminimalisatierisico.</span></div>
+      <div class="card-row"><span class="card-row-label">Herstel</span><span>Voeg <code>LIMIT</code> en <code>OFFSET</code> toe via query-parameters: <code>GET /api/orders?page=1&amp;limit=50</code>.</span></div>
+    </div>
+  </div>
+
+  <div class="finding-card">
+    <div class="card-header card-header-laag">
+      <div class="card-stripe stripe-laag"></div>
+      <span class="badge badge-laag">Laag</span><span class="card-id">SEC-020</span>
+      <span class="card-title">Productafbeelding accepteert willekeurige externe URL's</span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">server/routes/products.js:28</span></span></div>
+      <div class="card-row"><span class="card-row-label">Probleem</span><span>Het <code>image</code>-veld accepteert elke URL. Een gecompromitteerde adminaccount kan tracking pixels, SSRF-probes of ongepaste content instellen als afbeelding.</span></div>
+      <div class="card-row"><span class="card-row-label">Herstel</span><span>Valideer URL tegen een allowlist van vertrouwde domeinen, of implementeer afbeeldingsuploads naar eigen opslag.</span></div>
+    </div>
+  </div>
+
+  <div class="finding-card">
+    <div class="card-header card-header-info">
+      <div class="card-stripe stripe-info"></div>
+      <span class="badge badge-info">Info</span><span class="card-id">SEC-021</span>
+      <span class="card-title">id/slug-lookup gebruikt correct prepared statement — geen SQL-injectie</span>
+    </div>
+    <div class="card-body">
+      <div class="card-row"><span class="card-row-label">Locatie</span><span><span class="card-loc">server/routes/products.js:43</span></span></div>
+      <div class="card-row"><span class="card-row-label">Bevinding</span><span><code>WHERE id = ? OR slug = ?</code> met req.params.id voor beide parameters. SQLite coerceert het type correct. Geen SQL-injectierisico. Geflagd voor volledigheid als bevestiging van correcte implementatie.</span></div>
+    </div>
+  </div>
+
+  <div class="page-footer"><span>Rembro Webshop · Beveiligingsaudit 2026</span><span>Pagina 14</span></div>
+</div>
+
+<!-- ══════════════════════ ROADMAP ══════════════════════ -->
+<div class="page inner">
+  <div class="page-header">
+    <span class="page-header-title">8. Prioriteitenkaart voor herstel</span>
+    <span class="page-header-brand">Rembro Beveiligingsaudit 2026</span>
+  </div>
+  <div class="section-title"><span class="section-num">8.</span>Prioriteitenkaart voor herstel</div>
+  <div class="section-intro">Herstelacties zijn ingedeeld in drie fasen op basis van implementatie-inspanning en risicoreductie.</div>
+
+  <div class="phase-card phase-1">
+    <div class="phase-header">
+      <div class="phase-num">1</div>
+      <div class="phase-title-wrap">
+        <div class="phase-label">Fase 1</div>
+        <div class="phase-title">Onmiddellijk — binnen 1–3 dagen</div>
+      </div>
+      <div class="phase-timeline">⚡ 1–3 dagen</div>
+    </div>
+    <div class="phase-body">
+      <div style="width:100%;margin-bottom:2mm;font-size:8pt;color:#7f1d1d;font-weight:600">Verwijder hardgecodeerde defaults, voeg rate limiting toe, fix timing-oracle, block overselling:</div>
+      <span class="phase-tag">SEC-003 Verwijder admin/admin123 defaults</span>
+      <span class="phase-tag">SEC-003 Verwijder credential-hint uit AdminPage</span>
+      <span class="phase-tag">SEC-004 express-rate-limit op /auth/login</span>
+      <span class="phase-tag">SEC-001 crypto.timingSafeEqual implementeren</span>
+      <span class="phase-tag">SEC-007 BEGIN IMMEDIATE in withTransaction</span>
+      <span class="phase-tag">SEC-012 Max 50 orderregels per verzoek</span>
+    </div>
+  </div>
+
+  <div class="phase-card phase-2">
+    <div class="phase-header">
+      <div class="phase-num">2</div>
+      <div class="phase-title-wrap">
+        <div class="phase-label">Fase 2</div>
+        <div class="phase-title">Korte termijn — binnen 1–2 weken</div>
+      </div>
+      <div class="phase-timeline">📅 1–2 weken</div>
+    </div>
+    <div class="phase-body">
+      <div style="width:100%;margin-bottom:2mm;font-size:8pt;color:#7c2d12;font-weight:600">Vervang tokenarchitectuur, voeg beveiligingsheaders toe, beperk CORS, fix idempotentie:</div>
+      <span class="phase-tag">SEC-002 Willekeurige sessietoken met expiry</span>
+      <span class="phase-tag">SEC-006 helmet + CSP installeren</span>
+      <span class="phase-tag">SEC-005 CORS beperken tot eigen domein</span>
+      <span class="phase-tag">SEC-008 Idempotentie-sleutel voor orders</span>
+      <span class="phase-tag">SEC-013 Swagger UI lokaal bundelen</span>
+      <span class="phase-tag">SEC-010 Max. stringlengte in requireString</span>
+    </div>
+  </div>
+
+  <div class="phase-card phase-3">
+    <div class="phase-header">
+      <div class="phase-num">3</div>
+      <div class="phase-title-wrap">
+        <div class="phase-label">Fase 3</div>
+        <div class="phase-title">Structureel — binnen een maand</div>
+      </div>
+      <div class="phase-timeline">🗓️ 1 maand</div>
+    </div>
+    <div class="phase-body">
+      <div style="width:100%;margin-bottom:2mm;font-size:8pt;color:#1e3a8a;font-weight:600">Infrastructuur, AVG-compliance en overige verbeteringen:</div>
+      <span class="phase-tag">SEC-015 Non-root gebruiker in Docker</span>
+      <span class="phase-tag">SEC-016 AVG-retentiebeleid + anonimisering</span>
+      <span class="phase-tag">SEC-014 Scheiding log vs. foutrespons client</span>
+      <span class="phase-tag">SEC-011 Prijs = 0 weigeren in validatie</span>
+      <span class="phase-tag">SEC-019 Paginering bestellingenlijst</span>
+      <span class="phase-tag">SEC-020 Afbeeldings-URL allowlist</span>
+    </div>
+  </div>
+
+  <!-- Risk reduction chart -->
+  <div style="margin-top:5mm;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:4mm">
+    <div style="font-size:8pt;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:3mm">Verwachte risicoreductie per fase</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:3mm;text-align:center">
+      <div>
+        <div style="font-size:8pt;color:#dc2626;font-weight:700;margin-bottom:2mm">Na fase 1</div>
+        <div style="background:#e2e8f0;border-radius:4px;height:12px;overflow:hidden"><div style="width:60%;height:100%;background:linear-gradient(90deg,#dc2626,#ef4444);border-radius:4px"></div></div>
+        <div style="font-size:7.5pt;color:var(--muted);margin-top:1mm">~60% kritiek risico weggenomen</div>
+      </div>
+      <div>
+        <div style="font-size:8pt;color:#ea580c;font-weight:700;margin-bottom:2mm">Na fase 2</div>
+        <div style="background:#e2e8f0;border-radius:4px;height:12px;overflow:hidden"><div style="width:85%;height:100%;background:linear-gradient(90deg,#ea580c,#f97316);border-radius:4px"></div></div>
+        <div style="font-size:7.5pt;color:var(--muted);margin-top:1mm">~85% totaal risico gemitigeerd</div>
+      </div>
+      <div>
+        <div style="font-size:8pt;color:#2563eb;font-weight:700;margin-bottom:2mm">Na fase 3</div>
+        <div style="background:#e2e8f0;border-radius:4px;height:12px;overflow:hidden"><div style="width:97%;height:100%;background:linear-gradient(90deg,#2563eb,#3b82f6);border-radius:4px"></div></div>
+        <div style="font-size:7.5pt;color:var(--muted);margin-top:1mm">~97% risico gemitigeerd</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer"><span>Rembro Webshop · Beveiligingsaudit 2026</span><span>Pagina 15</span></div>
+</div>
+
+<!-- ══════════════════════ POSITIVES + VERIFICATION ══════════════════════ -->
+<div class="page inner">
+  <div class="page-header">
+    <span class="page-header-title">9–10. Positief &amp; Verificatie</span>
+    <span class="page-header-brand">Rembro Beveiligingsaudit 2026</span>
+  </div>
+
+  <div class="section-title"><span class="section-num">9.</span>Positieve bevindingen</div>
+  <div class="section-intro" style="margin-bottom:4mm">De volgende beveiligingspraktijken zijn correct geïmplementeerd en verdienen erkenning.</div>
+
+  <div class="check-list">
+    <div class="check-item"><span class="check-icon">✓</span><div class="check-text"><strong>Server-side prijsherberekening</strong> (<code>orders.js:93–95</code>) — het ordertotaal wordt altijd herberekend vanuit de database. Prijsmanipulatie via de client heeft geen effect. Dit is de meest kritische bedrijfslogica-beveiliging in een webshop en is correct gedaan.</div></div>
+    <div class="check-item"><span class="check-icon">✓</span><div class="check-text"><strong>Geparameteriseerde queries door de gehele codebase</strong> — alle SQL gebruikt prepared statements. Geen string-concatenatie met gebruikersinvoer. Geen SQL-injectie aangetroffen.</div></div>
+    <div class="check-item"><span class="check-icon">✓</span><div class="check-text"><strong>Auth-middleware consistent op alle admin-routes</strong> — elke muterende en admin-lees-route past <code>requireAdmin</code> toe. Geen ontbrekende autorisatiecheck gevonden op backend-routes.</div></div>
+    <div class="check-item"><span class="check-icon">✓</span><div class="check-text"><strong>Transactionele orderverwerking</strong> (<code>database.js:17–27</code>) — aanmaak van order, orderregels en voorraadvermindering zijn atomair. Partial writes worden terugedraaid bij fouten.</div></div>
+    <div class="check-item"><span class="check-icon">✓</span><div class="check-text"><strong>Foreign keys ingeschakeld</strong> (<code>PRAGMA foreign_keys = ON</code>) — referentiële integriteit gewaarborgd in SQLite.</div></div>
+    <div class="check-item"><span class="check-icon">✓</span><div class="check-text"><strong>Geen dangerouslySetInnerHTML of .innerHTML</strong> — in geen enkel React-component is een XSS-sink aangetroffen. Alle gebruikersdata via React's DOM-abstractie.</div></div>
+    <div class="check-item"><span class="check-icon">✓</span><div class="check-text"><strong>Statuswaarden op allowlist gevalideerd</strong> — orderstatussen worden gevalideerd tegen een expliciete <code>allowedStatuses</code>-lijst; willekeurige waarden worden geweigerd.</div></div>
+    <div class="check-item"><span class="check-icon">✓</span><div class="check-text"><strong>docker-compose vereist env-vars</strong> (<code>${VAR:?message}</code>-syntaxis) — docker-compose weigert op te starten als <code>ADMIN_PASSWORD</code> en <code>ADMIN_SECRET</code> ontbreken.</div></div>
+    <div class="check-item"><span class="check-icon">✓</span><div class="check-text"><strong>SQLite-bestand uitgesloten van deploypakket</strong> — CI-workflow sluit <code>*.sqlite</code> expliciet uit, zodat productiedata niet per ongeluk wordt overschreven.</div></div>
+  </div>
+
+  <div class="section-title" style="margin-top:7mm"><span class="section-num">10.</span>Handmatige verificatie vereist</div>
+  <div class="section-intro" style="margin-bottom:4mm">De volgende punten zijn niet vanuit statische code-analyse vast te stellen en vereisen controle op het live systeem of in de hostingomgeving.</div>
+
+  <div class="verify-item"><span class="verify-icon">⚠</span><div class="check-text"><strong>TLS/HTTPS in productie</strong> — Dockerfile exposeert poort 3001 zonder TLS. Controleer of een reverse proxy (nginx, Caddy) HTTPS afhandelt. Zonder TLS worden admin-token en klantgegevens onversleuteld verstuurd.</div></div>
+  <div class="verify-item"><span class="verify-icon">⚠</span><div class="check-text"><strong>SQLite-concurrency-modus</strong> — <code>node:sqlite</code> is experimenteel in Node.js 24. Controleer <code>PRAGMA journal_mode;</code> en <code>PRAGMA locking_mode;</code> — dit beïnvloedt de ernst van SEC-007.</div></div>
+  <div class="verify-item"><span class="verify-icon">⚠</span><div class="check-text"><strong>Firewallconfiguratie</strong> — Is poort 3001 direct publiek toegankelijk of alleen via reverse proxy op localhost? Controleer op het productiesysteem.</div></div>
+  <div class="verify-item"><span class="verify-icon">⚠</span><div class="check-text"><strong>Toegang tot Docker-logs</strong> — <code>console.error()</code> met stacktraces gaat naar Docker log driver. Controleer of logs toegankelijk zijn voor ongeautoriseerde partijen in de cloud-hostingomgeving.</div></div>
+  <div class="verify-item"><span class="verify-icon">⚠</span><div class="check-text"><strong>Docker volume-isolatie</strong> — Is het <code>rembro-data</code>-volume (SQLite) bereikbaar vanuit andere containers of de Docker host?</div></div>
+  <div class="verify-item"><span class="verify-icon">⚠</span><div class="check-text"><strong>Toekomstige betalingsprovider</strong> — Bij toevoeging van Mollie/Stripe: webhook-signatureverificatie implementeren vóór orderstatuswijziging naar "betaald". Nooit vertrouwen op client-redirect alleen.</div></div>
+
+  <div class="page-footer"><span>Rembro Webshop · Beveiligingsaudit 2026</span><span>Pagina 16</span></div>
+</div>
+
+<!-- ══════════════════════ BACK COVER ══════════════════════ -->
+<div class="page cover" style="justify-content:center;align-items:center;text-align:center">
+  <div>
+    <svg width="60" height="66" viewBox="0 0 90 100" fill="none" style="margin-bottom:8mm">
+      <path d="M45 4 L84 18 L84 52 C84 74 66 92 45 97 C24 92 6 74 6 52 L6 18 Z" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+      <path d="M45 18 L70 27 L70 50 C70 64 59 74 45 80 C31 74 20 64 20 50 L20 27 Z" fill="rgba(96,165,250,0.15)" stroke="rgba(96,165,250,0.35)" stroke-width="1.5"/>
+      <rect x="33" y="50" width="24" height="19" rx="3" fill="rgba(255,255,255,0.8)"/>
+      <path d="M37 50 L37 44 C37 43 53 43 53 44 L53 50" stroke="rgba(255,255,255,0.8)" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <circle cx="45" cy="60" r="3.5" fill="#0F2D5E"/>
+    </svg>
+    <div style="color:rgba(255,255,255,0.35);font-size:9pt;font-weight:600;letter-spacing:3px;text-transform:uppercase;margin-bottom:3mm">Rembro Webshop</div>
+    <div style="color:#fff;font-size:16pt;font-weight:800;margin-bottom:2mm">Beveiligingsaudit 2026</div>
+    <div style="width:50px;height:2px;background:linear-gradient(90deg,#3b82f6,#60a5fa);margin:4mm auto"></div>
+    <div style="color:rgba(255,255,255,0.4);font-size:9pt;margin-bottom:8mm">Dit rapport is strikt vertrouwelijk.<br>Alle bevindingen zijn gebaseerd op statische broncode-analyse.<br>Geen aanvallen zijn uitgevoerd op live systemen.</div>
+    <div style="display:flex;justify-content:center;gap:6mm">
+      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:4mm 6mm;text-align:center">
+        <div style="color:rgba(255,255,255,0.4);font-size:7pt;font-weight:700;letter-spacing:2px;text-transform:uppercase">Bevindingen</div>
+        <div style="color:#fff;font-size:22pt;font-weight:900;line-height:1">21</div>
+      </div>
+      <div style="background:rgba(220,38,38,0.15);border:1px solid rgba(220,38,38,0.3);border-radius:8px;padding:4mm 6mm;text-align:center">
+        <div style="color:rgba(255,255,255,0.4);font-size:7pt;font-weight:700;letter-spacing:2px;text-transform:uppercase">Kritiek</div>
+        <div style="color:#fca5a5;font-size:22pt;font-weight:900;line-height:1">3</div>
+      </div>
+      <div style="background:rgba(234,88,12,0.15);border:1px solid rgba(234,88,12,0.3);border-radius:8px;padding:4mm 6mm;text-align:center">
+        <div style="color:rgba(255,255,255,0.4);font-size:7pt;font-weight:700;letter-spacing:2px;text-transform:uppercase">Hoog</div>
+        <div style="color:#fdba74;font-size:22pt;font-weight:900;line-height:1">5</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
