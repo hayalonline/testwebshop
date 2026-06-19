@@ -1,5 +1,6 @@
 FROM node:24-slim AS deps
 WORKDIR /app
+ENV PUPPETEER_SKIP_DOWNLOAD=true
 COPY package*.json ./
 RUN npm ci
 
@@ -11,6 +12,7 @@ FROM node:24-slim AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3001
+ENV PUPPETEER_SKIP_DOWNLOAD=true
 
 COPY package*.json ./
 RUN npm ci --omit=dev && npm cache clean --force
